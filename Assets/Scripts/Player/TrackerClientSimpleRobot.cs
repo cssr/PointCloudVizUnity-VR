@@ -146,6 +146,11 @@ public class TrackerClientSimpleRobot : MonoBehaviour
         return head;
     }
 
+    public Transform getRightArm()
+    {
+        return rightElbow;
+    }
+
     Transform createAvatarJoint(Transform parent, string name, float scale = ballSize)
     {
         GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);

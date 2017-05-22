@@ -64,9 +64,9 @@ public class ButtonManager : MonoBehaviour {
 		}
 	}
 
-	void OnGUI(){
+	void Update(){
 	
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		if (Input.GetKeyUp (KeyCode.Space)) {
 			foreach (PointCloud pc in clouds)
 			{
 

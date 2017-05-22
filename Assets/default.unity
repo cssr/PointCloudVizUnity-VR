@@ -115,7 +115,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 261751539}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 424662b252e154b20b6756971d88a413, type: 3}
   m_Name: 
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a5ea9c76625945c993447514c2eb553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showHead: 1
+  showHead: 0
 --- !u!114 &261751542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9fba40f96df24f7a96355c615ba8e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  port: 44444
+  port: 58116
 --- !u!4 &261751543
 Transform:
   m_ObjectHideFlags: 0
@@ -284,11 +284,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53123603d61b82f4e81b8388a167e835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshDirPath: /Users/mini/Work/BlackBox/Data/RuiLopesGraca/PointClouds/Individual/Myiu/Girafa/Sample
-  cameraFilePath: /Users/mini/Work/BlackBox/Data/RuiLopesGraca/configSettingsFIXED2.txt
+  meshDirPath: E:\DADOS RLG\Miyu\Girafa\Output\sample
+  cameraFilePath: E:\DADOS RLG\Miyu\configSettings1FIXED.txt
   skipFirstX: 0
   currentCloud: 0
-  playing: 0
+  playing: 1
   calibrationName: GIRAFA
 --- !u!4 &635600637
 Transform:
@@ -302,6 +302,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 505511774}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &756664225
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 756664227}
+  - component: {fileID: 756664226}
+  m_Layer: 0
+  m_Name: Input
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &756664226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 756664225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4bd6737f629c4f45a16c3d419d2aa1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 261751539}
+--- !u!4 &756664227
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 756664225}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10.585413, y: -2.105697, z: -3.472173}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &845942294
 GameObject:
@@ -382,11 +423,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53123603d61b82f4e81b8388a167e835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshDirPath: /Users/mini/Work/BlackBox/Data/RuiLopesGraca/PointClouds/Individual/Myiu/BlackboxWIN/Sample
-  cameraFilePath: /Users/mini/Work/BlackBox/Data/RuiLopesGraca/configSettingsFIXED2.txt
+  meshDirPath: E:\DADOS RLG\Miyu\BlackboxWIN\Output\sample
+  cameraFilePath: E:\DADOS RLG\Miyu\configSettings1FIXED.txt
   skipFirstX: 0
   currentCloud: 0
-  playing: 0
+  playing: 1
   calibrationName: BLACKBOXWIN
 --- !u!4 &1027046563
 Transform:
@@ -424,7 +465,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1116486095}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.017191, y: 1.327553, z: -2.823631}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1904072584}
@@ -446,6 +487,77 @@ MonoBehaviour:
   headTransform: {fileID: 0}
   character: {fileID: 261751539}
   thirdPerson: 0
+--- !u!1 &1261311075
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1261311078}
+  - component: {fileID: 1261311077}
+  - component: {fileID: 1261311076}
+  m_Layer: 0
+  m_Name: Terrain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!154 &1261311076
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1261311075}
+  m_Material: {fileID: 0}
+  m_Enabled: 1
+  m_TerrainData: {fileID: 15600000, guid: 61a00508ba703bc428cabf6b2a3317aa, type: 2}
+  m_EnableTreeColliders: 1
+--- !u!218 &1261311077
+Terrain:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1261311075}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_TerrainData: {fileID: 15600000, guid: 61a00508ba703bc428cabf6b2a3317aa, type: 2}
+  m_TreeDistance: 5000
+  m_TreeBillboardDistance: 50
+  m_TreeCrossFadeLength: 5
+  m_TreeMaximumFullLODCount: 50
+  m_DetailObjectDistance: 80
+  m_DetailObjectDensity: 1
+  m_HeightmapPixelError: 5
+  m_SplatMapDistance: 1000
+  m_HeightmapMaximumLOD: 0
+  m_CastShadows: 1
+  m_DrawHeightmap: 1
+  m_DrawTreesAndFoliage: 1
+  m_ReflectionProbeUsage: 1
+  m_MaterialType: 0
+  m_LegacySpecular:
+    serializedVersion: 2
+    rgba: 4286545791
+  m_LegacyShininess: 0.078125
+  m_MaterialTemplate: {fileID: 0}
+  m_BakeLightProbesForTrees: 1
+  m_ScaleInLightmap: 0.04096
+  m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
+--- !u!4 &1261311078
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1261311075}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -238, y: 0, z: -243}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1595468526
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,11 +660,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53123603d61b82f4e81b8388a167e835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshDirPath: /Users/mini/Work/BlackBox/Data/RuiLopesGraca/PointClouds/Individual/Myiu/Ultrabook/Sample
-  cameraFilePath: /Users/mini/Work/BlackBox/Data/RuiLopesGraca/configSettingsFIXED2.txt
+  meshDirPath: E:\DADOS RLG\Miyu\Ultrabook\Output\sample
+  cameraFilePath: E:\DADOS RLG\Miyu\configSettings1FIXED.txt
   skipFirstX: 0
   currentCloud: 0
-  playing: 0
+  playing: 1
   calibrationName: ULTRABOOK
 --- !u!4 &1742746701
 Transform:
@@ -744,7 +856,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1904072578}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.217191, y: -0.847553, z: -6.2963686}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1116486096}

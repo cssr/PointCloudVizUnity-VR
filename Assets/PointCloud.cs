@@ -19,7 +19,7 @@ public class PointCloud : MonoBehaviour {
 		meshes = new Dictionary<int, List<Mesh>> ();
 		string[] dira = Directory.GetFiles(meshDirPath);
 		foreach (string f in dira) {
-			char[] sepFile = { '/' };
+			char[] sepFile = { '\\' };
 			string[] path = f.Split (sepFile);
 			string name = path [path.Length - 1];
 			if(name.Equals(".DS_Store"))
@@ -42,7 +42,7 @@ public class PointCloud : MonoBehaviour {
 		}
 		
 		// invert scale on x axis to compensate kinect mirroring the data
-		transform.localScale += new Vector3(-1.0F, 1, 1);
+		transform.localScale = new Vector3(-1.0F, 1, 1);
 		
 		setCloudToRender (first,true);
 		//setInitialPositionIni ();
@@ -77,7 +77,7 @@ public class PointCloud : MonoBehaviour {
 		}
 		Vector3 position = new Vector3 (values[0],values[1],values[2]);
 		Vector3 rotation = new Vector3 (values[3],values[4],values[5]);
-		this.gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		this.gameObject.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
 		this.gameObject.transform.Translate (position);
 		this.gameObject.transform.Rotate (rotation);
 		
@@ -100,7 +100,7 @@ public class PointCloud : MonoBehaviour {
 					Quaternion rotation = new Quaternion (float.Parse(lineSplited[4]),float.Parse(lineSplited[5]),
 						float.Parse(lineSplited[6]),float.Parse(lineSplited[7]));
 
-					this.gameObject.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+					this.gameObject.transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
 					this.gameObject.transform.position =position;
 					this.gameObject.transform.rotation = rotation;
 				}
