@@ -38,7 +38,7 @@ public class Scribbler : MonoBehaviour {
         Color c2 = new Color(c1.r / 2.0f, c1.g / 2.0f, c1.b /2.0f);
         lineRenderer.startColor =c1;
         lineRenderer.endColor = c2;
-        lineRenderer.numPositions = 0;
+        lineRenderer.positionCount = 0;
         _lineRenderers.Add(lineRenderer);
         _currentRenderer++;
     }
@@ -58,7 +58,7 @@ public class Scribbler : MonoBehaviour {
             {
                 if (_myPoints != null)
                 {
-                    _lineRenderers[_currentRenderer].numPositions = _myPoints.Count;
+                    _lineRenderers[_currentRenderer].positionCount = _myPoints.Count;
                     for (int i = 0; i < _myPoints.Count; i++)
                     {
                         _lineRenderers[_currentRenderer].SetPosition(i, _myPoints[i]);

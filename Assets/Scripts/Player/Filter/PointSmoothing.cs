@@ -47,7 +47,7 @@ public class PointSmoothing
 
 		if (isNewFrame) 
 		{
-			isInitializated = true;
+			//isInitializated = true; TIRAR FILTRO?
 			accumulatedLerp = 0.0f;
 		
 			initPoint = currPoint;

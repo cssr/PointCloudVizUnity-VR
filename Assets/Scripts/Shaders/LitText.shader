@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 Shader "GUI/LitText" { 
@@ -54,7 +56,7 @@ SubShader {
                * max(0.0, dot(normalDirection, lightDirection));
 
             output.col = float4(diffuseReflection, 1.0);
-            output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
+            output.pos = UnityObjectToClipPos(input.vertex);
             output.tex = input.texcoord;
             return output;
          }
