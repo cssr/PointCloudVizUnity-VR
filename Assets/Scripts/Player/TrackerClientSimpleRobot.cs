@@ -327,7 +327,7 @@ public class TrackerClientSimpleRobot : MonoBehaviour
 				string bodyID = b.Properties[BodyPropertiesType.UID];
 				if (!humans.ContainsKey(bodyID)) 
 				{
-					humans.Add(bodyID, new Human());
+					humans.Add(bodyID, new Human(false));
 				}
 				humans[bodyID].Update(b);
 			} 

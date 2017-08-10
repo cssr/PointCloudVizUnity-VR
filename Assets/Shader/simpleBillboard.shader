@@ -8,7 +8,7 @@ Shader "Custom/Simple Billboard"
 	Properties 
 	{
 		_SpriteTex ("Base (RGB)", 2D) = "white" {}
-		_Size ("Size", Range(0, 10)) = 0.01 //patch size
+		_Size ("Size", Range(0, 3)) = 0.03 //patch size
 		_Color ("Color", Color) = (1, 1, 1, 0.2) 
 
 		_Dev ("Dev", Range(-5, 5)) = 0
@@ -23,8 +23,7 @@ Shader "Custom/Simple Billboard"
 	{
 		Pass
 		{
-	
-			Tags {"RenderType"="Transparent"}
+			Tags { "RenderType"="Transparent" }
 			LOD 200
 			
 			Cull Off // render both back and front faces
@@ -45,8 +44,6 @@ Shader "Custom/Simple Billboard"
 					float3	normal	: NORMAL;
 					float2  tex0	: TEXCOORD0;
 					float4 color	: COLOR;
-					float depth : PSIZE;
-				
 				};
 
 				struct FS_INPUT
@@ -75,8 +72,8 @@ Shader "Custom/Simple Billboard"
 				GS_INPUT VS_Main(appdata_full v)
 				{
 					GS_INPUT output = (GS_INPUT)0;
-					output.depth = v.vertex.z;
-					output.pos =  mul(unity_ObjectToWorld, v.vertex);
+
+					output.pos =  v.vertex;
 					output.normal = v.normal;
 					output.tex0 = float2(0, 0);
 					output.color = v.color;
@@ -92,21 +89,23 @@ Shader "Custom/Simple Billboard"
 				{
 					
 					
-					float3 look = _WorldSpaceCameraPos - p[0].pos;	
+					//float3 look = _WorldSpaceCameraPos - p[0].pos;	
 					
-					float3 up =UNITY_MATRIX_IT_MV[1];
-					//float3 up = float3(0,1,0);
+					float3 up =UNITY_MATRIX_IT_MV[1].xyz;
+					float3 right = UNITY_MATRIX_IT_MV[0].xyz;
+
 					//if(abs(look.y) > abs(look.x) || abs(look.y) > abs(look.z))
 					//	up = float3(1,0,0);
 
-				//	look.y = 0;
-					look = normalize(look);
+					//look.y = 0;
+					//look = normalize(look);
 					up = normalize(up);
-					float3 right = cross(up, look);
+					right = normalize(right);
+					//float3 right = cross(up, look);
 					
 					
-					float size = (p[0].depth*_Size)/351.00146192  ;
-					//float size = _Size;
+					//float size = (p[0].pos.z*_Size)/351.00146192  ;
+					float size = 0.014;
 					float halfS = 0.5f * size;
 
 							
@@ -116,26 +115,26 @@ Shader "Custom/Simple Billboard"
 					v[2] = float4(p[0].pos - halfS * right - halfS * up, 1.0f);
 					v[3] = float4(p[0].pos - halfS * right + halfS * up, 1.0f);
 
-					//loat4x4 vp = UnityObjectToClipPos(unity_WorldToObject);
+					//float4 vp = UnityObjectToClipPos(unity_WorldToObject);
 					FS_INPUT pIn;
-					pIn.pos = UnityObjectToClipPos( v[0]);
+					pIn.pos = UnityObjectToClipPos(v[0]);
 					pIn.tex0 = float2(1.0f, 0.0f);
 					pIn.color = p[0].color;
 					triStream.Append(pIn);
 
-					pIn.pos =  UnityObjectToClipPos(v[1]);
+					pIn.pos = UnityObjectToClipPos(v[1]);
 					pIn.tex0 = float2(1.0f, 1.0f);
 					pIn.color = p[0].color;
 					triStream.Append(pIn);
 
-					pIn.pos =  UnityObjectToClipPos( v[2]);
+					pIn.pos = UnityObjectToClipPos(v[2]);
 					pIn.tex0 = float2(0.0f, 0.0f);
-					pIn.color =p[0].color;
+					pIn.color = p[0].color;
 					triStream.Append(pIn);
 
-					pIn.pos =  UnityObjectToClipPos( v[3]);
+					pIn.pos = UnityObjectToClipPos(v[3]);
 					pIn.tex0 = float2(0.0f, 1.0f);
-					pIn.color =p[0].color;
+					pIn.color = p[0].color;
 					triStream.Append(pIn);
 				}
 

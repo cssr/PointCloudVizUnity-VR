@@ -77,7 +77,7 @@ public class TrackerClientRecorded : MonoBehaviour
 				string bodyID = b.Properties[BodyPropertiesType.UID];
 				if (!humans.ContainsKey(bodyID)) 
 				{
-					humans.Add(bodyID, new Human());
+					humans.Add(bodyID, new Human(true));
 				}
 				humans[bodyID].Update(b);
 			} 

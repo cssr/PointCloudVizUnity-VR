@@ -30,7 +30,8 @@ public class Scribbler : MonoBehaviour {
         GameObject go = new GameObject("lineRenderer " + _currentRenderer);
         go.transform.parent = gameObject.transform;
         LineRenderer lineRenderer = go.AddComponent<LineRenderer>();
-        lineRenderer.material = new Material(Shader.Find("Particles/Additive"));
+		//lineRenderer.material = new Material (Shader.Find ("Particles/Additive"));
+		lineRenderer.material = Resources.Load("ParticleGlow") as Material;
         lineRenderer.widthMultiplier = 0.05f;
         // A simple 2 color gradient with a fixed alpha of 1.0f.
         float alpha = 1.0f;
@@ -44,7 +45,8 @@ public class Scribbler : MonoBehaviour {
     }
     // Update is called once per frame
     void Update () {
-        if (_handheldListener.Message.Click)
+        //if (_handheldListener.Message.Click)
+		if(Input.GetMouseButton(0))
         {
             if (!_drawing)
             {

@@ -16,11 +16,13 @@ public class Human
 	private TrackedBodyRepresentation _tbrepresentation;
 	public TrackedBodyRepresentation tbr { get { return _tbrepresentation; } }
 
-	public Human()
+	public Human(bool createTBR)
 	{
 		_body = null;
 		_id = null;
-		_tbrepresentation = new TrackedBodyRepresentation ();
+		if (createTBR) {
+			_tbrepresentation = new TrackedBodyRepresentation ();
+		}
 	}
 
 
