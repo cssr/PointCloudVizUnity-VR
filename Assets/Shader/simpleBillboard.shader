@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
@@ -7,14 +9,9 @@ Shader "Custom/Simple Billboard"
 {
 	Properties 
 	{
-		_SpriteTex ("Base (RGB)", 2D) = "white" {}
 		_Size ("Size", Range(0, 3)) = 0.03 //patch size
 		_Color ("Color", Color) = (1, 1, 1, 0.2) 
-
-		_Dev ("Dev", Range(-5, 5)) = 0
-		_Gamma ("Gamma", Range(0, 6)) =3.41
-		_SigmaX ("SigmaX", Range(-3, 3)) = 0.10
-		_SigmaY ("SigmaY", Range(-3, 3)) = 0.10
+		_ColorizeDistance("Colorize Distance", Range(0,20))= 0.2 
 		_Alpha ("Alpha", Range(0,1)) = 0.015
 
 	}
@@ -60,9 +57,11 @@ Shader "Custom/Simple Billboard"
 
 				float _Size;
 				float4x4 _VP;
-				Texture2D _SpriteTex;
-				SamplerState sampler_SpriteTex;
-				float4 _Color; 
+				float4 _Color;
+				float _ColorizeDistance;
+				int _BonesPositionsLenght = 0;
+				float _BonesPositions[87];
+				 
 
 				// **************************************************************
 				// Shader Programs												*
@@ -76,7 +75,26 @@ Shader "Custom/Simple Billboard"
 					output.pos =  v.vertex;
 					output.normal = v.normal;
 					output.tex0 = float2(0, 0);
-					output.color = v.color;
+					bool origColor = true;
+					if(_BonesPositionsLenght != 0)
+					{
+						int i = 0;
+
+						float3 worldPos = mul(unity_ObjectToWorld,v.vertex).xyz;
+							
+						while(i < _BonesPositionsLenght){
+							float3 bonepos= float3(_BonesPositions[i],_BonesPositions[i+1],_BonesPositions[i+2]); // bones pos x,y,z
+							i+=3;
+							if(length (worldPos- bonepos) < _ColorizeDistance){
+								origColor = false;
+								break;
+							}  
+						}
+					}
+					if(origColor)
+						output.color = v.color; 
+					else
+						output.color = (v.color*0.2) +( _Color *0.8); 
 
 					return output;
 				}
@@ -138,18 +156,9 @@ Shader "Custom/Simple Billboard"
 					triStream.Append(pIn);
 				}
 
-				float theta1;
-				float theta2;
-				float theta3;
-
-				float alph;
-				bool aBuffer = true;
+			
 				float saturation;
 
-				float _Dev;
-				float _Gamma;
-				float _SigmaX;
-				float _SigmaY;
 				float _Alpha;
 
 				float gaussianTheta(float x, float x0, float y,float y0, float a, float sigmax, float sigmay, float gamma,float theta){
@@ -185,16 +194,12 @@ Shader "Custom/Simple Billboard"
 					alpha = alpha < 0.01? 0:alpha;
 					float4 t = float4(1.0f,1.0f,1.0f,alpha);
 					float3 normal;
-					if(t.a ==0 && !aBuffer){
+
+					if(t.a ==0){
 						discard;
-					}if(t.a ==0 && aBuffer){
-						return float4(0.0f,0.0f,0.0f,0.0f);
 					}
 					t = t*input.color;
-					//if(aBuffer)
-				//		t.a *= _Alpha;
-				//	else
-						t.a = _Alpha;
+					t.a = _Alpha;
 					float  P=sqrt(t.r*t.r*0.299+t.g*t.g*0.587+t.b*t.b*0.114 ) ;
 
 					//float  P=sqrt(t.r) ;

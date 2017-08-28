@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.IO;
 
 public class PointCloud : MonoBehaviour {
-	//public Material mat;
 	public string meshDirPath;
 	public string cameraFilePath;
 	public int skipFirstX = 0;
-	int maxclouds = 0;
 	public int currentCloud = 0;
 	public bool playing;
 	public string calibrationName = "";
+	public List<Transform> TestHighlight; 
+
+	int maxclouds = 0;
 	Dictionary<int,List<Mesh>> meshes;
-	
+	Material mat;
+
+
 	// Use this for initialization
 	void Start () {
 		meshes = new Dictionary<int, List<Mesh>> ();
@@ -33,7 +36,7 @@ public class PointCloud : MonoBehaviour {
 			meshes.Add(id,thecloud);
 		}
 		
-		Material mat = Resources.Load ("cloudmat") as Material;
+		mat = Resources.Load ("cloudmat") as Material;
 		List<Mesh> first = meshes [0];
 		for (int i = 0; i < maxclouds; i++) {
 			gameObject.AddComponent<MeshFilter>();
@@ -200,12 +203,24 @@ public class PointCloud : MonoBehaviour {
 		if (ydiff > 90 || cameraRot.eulerAngles.x < -30 || cameraRot.eulerAngles.z < -30) {
 			//	show = false;
 		}
-		
+
+		List<float> positions = new List<float> ();
+		foreach (Transform t in TestHighlight) {
+			positions.Add (t.position.x);
+			positions.Add (t.position.y);
+			positions.Add (t.position.z);
+		}
+		if (positions.Count != 0) {
+			mat.SetFloatArray ("_BonesPositions", positions);
+			mat.SetInt ("_BonesPositionsLenght", positions.Count);
+		}
 		if (currentCloud == meshes.Count)
 			currentCloud = 0;
 		setCloudToRender (meshes [currentCloud],show);
 		if (playing)
 			currentCloud++;
+
+
 	}
 	
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Scribbler : MonoBehaviour {
 
-    private UDPHandheldListener _handheldListener;
+    //private UDPHandheldListener _handheldListener;
     private List<LineRenderer> _lineRenderers;
     private int _currentRenderer = -1;
     private Transform _rightHand;
@@ -12,9 +12,22 @@ public class Scribbler : MonoBehaviour {
     private List<Vector3> _myPoints;
     public GameObject character;
 
+    public bool Drawing
+    {
+        get
+        {
+            return _drawing;
+        }
+
+        set
+        {
+            _drawing = value;
+        }
+    }
+
     // Use this for initialization
     void Start () {
-        _handheldListener = new UDPHandheldListener(1998, "negativespace");
+        //_handheldListener = new UDPHandheldListener(1998, "negativespace");
        
 
         if (character != null) {
@@ -46,17 +59,17 @@ public class Scribbler : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         //if (_handheldListener.Message.Click)
-		if(Input.GetMouseButton(0))
-        {
-            if (!_drawing)
+		//if(Input.GetMouseButton(0))
+        //{
+            if (!Drawing)
             {
                 _myPoints.Clear();
-                _drawing = true;
+                Drawing = true;
                 createRenderer();
             }
             _myPoints.Add(_rightHand.position);
 
-            if (_drawing)
+            if (Drawing)
             {
                 if (_myPoints != null)
                 {
@@ -67,12 +80,12 @@ public class Scribbler : MonoBehaviour {
                     }
                 }
             }
-        }
+      /*  }
         else
         {
             _drawing = false;
         }
-
+        */
 
        
     }
