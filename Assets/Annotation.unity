@@ -283,13 +283,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 532468932}
-  m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.10938166, w: 0.8754261}
+  m_LocalRotation: {x: 0.93724626, y: -0.0626005, z: 0.25113437, w: 0.23362827}
   m_LocalPosition: {x: -5.05, y: -3.01, z: -5.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 152.006, y: -30, z: 0}
 --- !u!1 &635600635
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 261751539}
-  menu: {fileID: 1767320537866462, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
+  menu: {fileID: 944522377}
 --- !u!114 &756664230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -798,48 +798,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1480702031
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 1480702033}
-  - component: {fileID: 1480702032}
-  m_Layer: 0
-  m_Name: 3DMenuManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1480702032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1480702031}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0a007a501879ac449a934b7fd3759f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  character: {fileID: 261751539}
-  menu: {fileID: 944522377}
---- !u!4 &1480702033
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1480702031}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.7615585, y: -0.29417562, z: 0.18371153}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 12
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1595468526
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,7 +932,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4672581854334374, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.64
       objectReference: {fileID: 0}
     - target: {fileID: 4672581854334374, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1006,8 +964,25 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1767320537866462, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1946296570239130, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
+      propertyPath: m_TagString
+      value: TextToSpeech
+      objectReference: {fileID: 0}
+    - target: {fileID: 1823118627379988, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
+      propertyPath: m_TagString
+      value: Scribbler
+      objectReference: {fileID: 0}
+    - target: {fileID: 1214530209283264, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
+      propertyPath: m_TagString
+      value: HighlightPoints
+      objectReference: {fileID: 0}
+    - target: {fileID: 23612533059688862, guid: 599efa91d388c7e4e8ea40e58f00a463,
+        type: 2}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ce06d9d2d34096947a5baaff567d11cc, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 599efa91d388c7e4e8ea40e58f00a463, type: 2}
   m_IsPrefabParent: 0
@@ -1388,7 +1363,7 @@ RectTransform:
   m_Children:
   - {fileID: 1304676925}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Cluster
+  - TextToSpeech
+  - Scribbler
+  - HighlightPoints
   layers:
   - Default
   - TransparentFX

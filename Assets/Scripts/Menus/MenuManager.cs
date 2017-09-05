@@ -9,14 +9,27 @@ public class MenuManager : MonoBehaviour {
 	public GameObject character;
     public GameObject menu;
 
+	private GameObject textToSpeechButton;
+	private GameObject scribblerButton;
+	private GameObject highlightPointsButton;
+
     private Transform _rightHand;
     private float doubleClickTimeLimit = 0.25f;
     private PointCloud[] clouds = null;
 
-    TextToSpeech textToSpeech;
-    Scribbler scribbler;
-    HighlightPoints highlightPoints;
-    ChangeColor changeColor;
+	private TextToSpeech textToSpeech;
+	private Scribbler scribbler;
+	private HighlightPoints highlightPoints;
+	private ChangeColor changeColor;
+
+	private Texture textToSpeechTextureActive;
+	private Texture textToSpeechTextureInactive;
+
+	private Texture scribblerTextureActive;
+	private Texture scribblerTextureInactive;
+
+	private Texture highlightPointsTextureActive;
+	private Texture highlightPointsTextureInactive;
    
 
     // Use this for initialization
@@ -35,6 +48,22 @@ public class MenuManager : MonoBehaviour {
 
         clouds = GameObject.FindObjectsOfType<PointCloud>();
         StartCoroutine(InputListener());
+
+		// get menu gameobject choices
+
+	/*	textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
+		scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
+		highlightPointsButton = GameObject.FindGameObjectWithTag ("HighlightPoints"); */
+
+		//Load menu buttons textures
+		textToSpeechTextureActive = Resources.Load("textToSpeechTexActive") as Texture;
+		textToSpeechTextureInactive = Resources.Load("textToSpeechTexInactive") as Texture;
+
+		scribblerTextureActive = Resources.Load("scribblerTexActive") as Texture;
+		scribblerTextureInactive = Resources.Load("scribblerTexInactive") as Texture;
+
+		highlightPointsTextureActive = Resources.Load("highlightPointsTexActive") as Texture;
+		highlightPointsTextureInactive = Resources.Load("highlightPointsTexInactive") as Texture;
     }
 
     // Update is called once per frame
@@ -130,18 +159,32 @@ public class MenuManager : MonoBehaviour {
 
     private void LeftMouseButtonSingleClick()
     {
+		// TODO: check if this is the best place to do this. It doesnt work on the start because the 3DMenu gameobject is disable!
+		if(scribblerButton == null)
+			scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
+
+		if(highlightPointsButton == null)
+			highlightPointsButton = GameObject.FindGameObjectWithTag ("HighlightPoints");
+
+		if(textToSpeechButton == null)
+			textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
+
 		if (scribbler.IsActive) {
 			// todo change texture in 3D Menu
 			scribbler.IsActive = false;
+			scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureInactive);
 		} else {
 			scribbler.IsActive = true;
+			scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureActive);
 		}
 
 		if (highlightPoints.IsActive) {
 			// todo change texture in 3D Menu
 			highlightPoints.IsActive = false;
+			highlightPointsButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", highlightPointsTextureInactive);
 		} else {
 			highlightPoints.IsActive = true;
+			highlightPointsButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", highlightPointsTextureActive);
 		}
 			
         Debug.Log("Left Mouse Button Single Click");
