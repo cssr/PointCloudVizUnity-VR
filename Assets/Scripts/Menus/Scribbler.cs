@@ -8,27 +8,16 @@ public class Scribbler : MonoBehaviour {
     private List<LineRenderer> _lineRenderers;
     private int _currentRenderer = -1;
     private Transform _rightHand;
-    private bool _drawing = false;
+	public bool IsActive { get; set; }
     private List<Vector3> _myPoints;
     public GameObject character;
 
-    public bool Drawing
-    {
-        get
-        {
-            return _drawing;
-        }
-
-        set
-        {
-            _drawing = value;
-        }
-    }
 
     // Use this for initialization
     void Start () {
         //_handheldListener = new UDPHandheldListener(1998, "negativespace");
        
+		IsActive = false;
 
         if (character != null) {
             TrackerClientSimpleRobot tcsr = character.GetComponent<TrackerClientSimpleRobot>();
@@ -61,15 +50,15 @@ public class Scribbler : MonoBehaviour {
         //if (_handheldListener.Message.Click)
 		//if(Input.GetMouseButton(0))
         //{
-            if (!Drawing)
+            if (!IsActive)
             {
                 _myPoints.Clear();
-                Drawing = true;
+				IsActive = true;
                 createRenderer();
             }
             _myPoints.Add(_rightHand.position);
 
-            if (Drawing)
+		if (IsActive)
             {
                 if (_myPoints != null)
                 {

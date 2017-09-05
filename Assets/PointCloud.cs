@@ -10,7 +10,6 @@ public class PointCloud : MonoBehaviour {
 	public int currentCloud = 0;
 	public bool playing;
 	public string calibrationName = "";
-	public List<Transform> TestHighlight; 
 
 	int maxclouds = 0;
 	Dictionary<int,List<Mesh>> meshes;
@@ -203,17 +202,7 @@ public class PointCloud : MonoBehaviour {
 		if (ydiff > 90 || cameraRot.eulerAngles.x < -30 || cameraRot.eulerAngles.z < -30) {
 			//	show = false;
 		}
-
-		List<float> positions = new List<float> ();
-		foreach (Transform t in TestHighlight) {
-			positions.Add (t.position.x);
-			positions.Add (t.position.y);
-			positions.Add (t.position.z);
-		}
-		if (positions.Count != 0) {
-			mat.SetFloatArray ("_BonesPositions", positions);
-			mat.SetInt ("_BonesPositionsLenght", positions.Count);
-		}
+			
 		if (currentCloud == meshes.Count)
 			currentCloud = 0;
 		setCloudToRender (meshes [currentCloud],show);

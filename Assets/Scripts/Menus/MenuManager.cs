@@ -46,6 +46,9 @@ public class MenuManager : MonoBehaviour {
             if (Input.GetMouseButtonDown(0))
                 yield return LeftMouseClickEvent();
 
+			if (Input.GetMouseButtonUp (0))
+				yield return LeftMouseReleaseEvent ();
+
             if(Input.GetMouseButtonDown(1))
                 yield return RightMouseClickEvent();
 
@@ -74,6 +77,18 @@ public class MenuManager : MonoBehaviour {
         }
         LeftMouseButtonSingleClick();
     }
+
+	private IEnumerator LeftMouseReleaseEvent(){
+		
+		//pause a frame so you don't pick up the same mouse down event.
+		yield return new WaitForEndOfFrame();
+
+		if (scribbler.IsActive)
+			scribbler.IsActive = false;
+
+		if (highlightPoints.IsActive)
+			highlightPoints.IsActive = false;
+	}
 
     private IEnumerator RightMouseClickEvent()
     {
@@ -115,7 +130,20 @@ public class MenuManager : MonoBehaviour {
 
     private void LeftMouseButtonSingleClick()
     {
-        scribbler.Drawing = true;
+		if (scribbler.IsActive) {
+			// todo change texture in 3D Menu
+			scribbler.IsActive = false;
+		} else {
+			scribbler.IsActive = true;
+		}
+
+		if (highlightPoints.IsActive) {
+			// todo change texture in 3D Menu
+			highlightPoints.IsActive = false;
+		} else {
+			highlightPoints.IsActive = true;
+		}
+			
         Debug.Log("Left Mouse Button Single Click");
         
     }
@@ -146,10 +174,12 @@ public class MenuManager : MonoBehaviour {
         Debug.Log("Right Mouse Button Single Click");
         if (menu.activeSelf)
         {
+			Debug.Log ("3D menu is " + menu.activeSelf);
             menu.SetActive(false);
         }
         else
         {
+			Debug.Log ("3D menu is " + menu.activeSelf);
             menu.SetActive(true);
         }
     }
@@ -173,8 +203,11 @@ public class MenuManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
     
-        // draw raycast vector to interact with the 3D Menu
-        Vector3 forward = transform.TransformDirection(Vector3.forward) * 10;
-		Debug.DrawRay(_rightHand.transform.position, forward, Color.green, 1, false);
+		if (menu.activeSelf) {
+			// draw raycast vector to interact with the 3D Menu
+			Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
+			Debug.DrawRay (_rightHand.transform.position, forward, Color.green, 1, false);
+		}
+
 	}
 }

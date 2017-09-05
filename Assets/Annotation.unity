@@ -323,7 +323,6 @@ MonoBehaviour:
   currentCloud: 0
   playing: 1
   calibrationName: GIRAFA
-  TestHighlight: []
 --- !u!4 &635600637
 Transform:
   m_ObjectHideFlags: 0
@@ -417,6 +416,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0813d12dc5d1a6c4cbfe61fb974b1d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointsToHighlight: []
+  character: {fileID: 261751539}
 --- !u!114 &756664231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -571,7 +572,6 @@ MonoBehaviour:
   currentCloud: 0
   playing: 1
   calibrationName: BLACKBOXWIN
-  TestHighlight: []
 --- !u!4 &1027046563
 Transform:
   m_ObjectHideFlags: 0
@@ -948,7 +948,6 @@ MonoBehaviour:
   currentCloud: 0
   playing: 1
   calibrationName: ULTRABOOK
-  TestHighlight: []
 --- !u!4 &1742746701
 Transform:
   m_ObjectHideFlags: 0
@@ -1442,4 +1441,3 @@ MonoBehaviour:
   currentCloud: 0
   playing: 1
   calibrationName: DESKTOP-P16ME4B
-  TestHighlight: []

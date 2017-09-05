@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AnnotationManager : MonoBehaviour {
+public class ScribblerAnnotation : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
