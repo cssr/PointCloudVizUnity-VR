@@ -38,6 +38,8 @@ public class MenuManager : MonoBehaviour {
    
 	private AnnotationManager annotationManager;
 
+	RaycastHit hit;
+
     // Use this for initialization
     protected void Start () {
 
@@ -183,16 +185,12 @@ public class MenuManager : MonoBehaviour {
 		if (scribblerButtonIsActive) {
 			// todo change texture in 3D Menu
 			scribbler.IsActive = true;
-	//		scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureInactive);
-	//		scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureActive);
 			Debug.Log ("Testing scribbler");
 		}
 
 		if (highlightPointsButtonIsActive) {
 			// todo change texture in 3D Menu
 			highlightPoints.IsActive = true;
-	//		highlightPointsButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", highlightPointsTextureInactive);
-	//		highlightPointsButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", highlightPointsTextureActive);
 			Debug.Log ("Testing highlight");
 		}
 
@@ -272,10 +270,53 @@ public class MenuManager : MonoBehaviour {
 			Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
 			Debug.DrawRay (_rightHand.transform.position, forward, Color.green, 1, false);
 
-			scribblerButtonIsActive = false;
-			highlightPointsButtonIsActive = false;
-			textToSpeechButtonIsActive = true;
-		}
+			if (Physics.Raycast (_rightHand.transform.position, forward, out hit)) {
+				print ("Found an object - name: " + hit.collider.name);
 
+
+				// SPEECH TO TEXT
+				if (hit.collider.name.Equals ("TextToSpeech")) {
+
+					if (textToSpeechButtonIsActive) {
+						textToSpeechButtonIsActive = false;
+						textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureInactive);
+					} 
+					else 
+					{
+						textToSpeechButtonIsActive = true;
+						textToSpeechButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", textToSpeechTextureActive);
+					}
+				}
+
+				// HIGHLIGHT POINTS
+				if (hit.collider.name.Equals("HighlightPoints")){
+
+					if (highlightPointsButtonIsActive) {
+						highlightPointsButtonIsActive = false;
+						highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureInactive);
+					} 
+					else 
+					{
+						highlightPointsButtonIsActive = true;
+						highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureActive);
+					}
+
+				}
+
+				// SCRIBBLER
+				if(hit.collider.name.Equals("Scribbler")){
+
+					if (scribblerButtonIsActive) {
+						scribblerButtonIsActive = false;
+						scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureInactive);
+					} 
+					else 
+					{
+						scribblerButtonIsActive = true;
+						scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureActive);
+					}
+				}	
+			}
+		}
 	}
 }
