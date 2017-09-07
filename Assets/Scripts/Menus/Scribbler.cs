@@ -33,7 +33,7 @@ public class Scribbler : MonoBehaviour {
         go.transform.parent = gameObject.transform;
         LineRenderer lineRenderer = go.AddComponent<LineRenderer>();
 		//lineRenderer.material = new Material (Shader.Find ("Particles/Additive"));
-		lineRenderer.material = Resources.Load("ParticleGlow") as Material;
+		lineRenderer.material = Resources.Load("ParticleAfterburner") as Material;
         lineRenderer.widthMultiplier = 0.05f;
         // A simple 2 color gradient with a fixed alpha of 1.0f.
         float alpha = 1.0f;

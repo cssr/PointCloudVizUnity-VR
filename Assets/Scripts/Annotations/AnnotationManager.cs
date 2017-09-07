@@ -21,7 +21,10 @@ public class AnnotationManager {
 		ScribblerAnnotationList.Add (sbAnnotation);
 	}
 
-	public void AddTextToSpeechAnnotation(TextToSpeechAnnotation ttsAnnotation){
+	public void AddTextToSpeechAnnotation(string text, Vector3 pos){
+		TextToSpeechAnnotation ttsAnnotation = new TextToSpeechAnnotation();
+		ttsAnnotation.Text = text;
+		ttsAnnotation.Position = pos;
 		TextToSpeechAnnotationList.Add (ttsAnnotation);
 	}
 
