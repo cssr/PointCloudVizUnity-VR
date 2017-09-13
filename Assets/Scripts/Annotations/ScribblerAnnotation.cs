@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScribblerAnnotation : MonoBehaviour {
+public class ScribblerAnnotation {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+	public int ID { get; set; }
+	public List<LineRenderer> lineRenderers { get; set; }
+	public Dictionary<BodyJointType, Vector3> Joints { get; set; }
+
 }

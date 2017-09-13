@@ -12,7 +12,7 @@ public class TrackerClientRecorded : MonoBehaviour
 
 	// Human
 
-	private Dictionary<string, Human> humans;
+	public Dictionary<string, Human> Humans { get; set; }
 
 
 	void Awake()
@@ -21,7 +21,7 @@ public class TrackerClientRecorded : MonoBehaviour
 		frameTime = DateTime.Now;
 
 
-		humans = new Dictionary<string, Human>();
+		Humans = new Dictionary<string, Human>();
 
 	}
 
@@ -30,7 +30,7 @@ public class TrackerClientRecorded : MonoBehaviour
 
 	void Update()
 	{	
-		foreach(Human h in humans.Values) 
+		foreach(Human h in Humans.Values) 
 		{
 			h.UpdateAvatarBody(isNewFrame,frameTime);
 		}
@@ -45,7 +45,7 @@ public class TrackerClientRecorded : MonoBehaviour
 	/// </summary>
 	private string GetHumanIdWithHandUp()
 	{
-		foreach (Human h in humans.Values) 
+		foreach (Human h in Humans.Values) 
 		{
 			if (h.body.Joints[BodyJointType.leftHand].y  > h.body.Joints[BodyJointType.head].y ||
 				h.body.Joints[BodyJointType.rightHand].y > h.body.Joints[BodyJointType.head].y)
@@ -75,11 +75,11 @@ public class TrackerClientRecorded : MonoBehaviour
 			try
 			{  
 				string bodyID = b.Properties[BodyPropertiesType.UID];
-				if (!humans.ContainsKey(bodyID)) 
+				if (!Humans.ContainsKey(bodyID)) 
 				{
-					humans.Add(bodyID, new Human(true));
+					Humans.Add(bodyID, new Human(true));
 				}
-				humans[bodyID].Update(b);
+				Humans[bodyID].Update(b);
 			} 
 			catch (Exception e) 
 			{
@@ -92,7 +92,7 @@ public class TrackerClientRecorded : MonoBehaviour
 	{
 		List<Human> deadhumans = new List<Human>();
 
-		foreach (Human h in humans.Values) 
+		foreach (Human h in Humans.Values) 
 		{
 			if (DateTime.Now > h.lastUpdated.AddMilliseconds(1000))
 			{
@@ -101,7 +101,7 @@ public class TrackerClientRecorded : MonoBehaviour
 		}
 		foreach (Human h in deadhumans) 
 		{
-			humans.Remove(h.id);
+			Humans.Remove(h.id);
 		}
 	}
 }

@@ -125,8 +125,10 @@ public class MenuManager : MonoBehaviour {
 		//pause a frame so you don't pick up the same mouse down event.
 		yield return new WaitForEndOfFrame();
 
-		if (scribblerButtonIsActive)
+		if (scribblerButtonIsActive) {
 			scribbler.IsActive = false; 
+			annotationManager.AddScribblerAnnotation (scribbler.LineRenderers);
+		}
 
 		if (highlightPointsButtonIsActive)
 			highlightPoints.IsActive = false;
@@ -265,6 +267,8 @@ public class MenuManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
     
+		scribblerButtonIsActive = true;
+
 		if (menu.activeSelf) {
 			// draw raycast vector to interact with the 3D Menu
 			Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
@@ -279,12 +283,12 @@ public class MenuManager : MonoBehaviour {
 
 					if (textToSpeechButtonIsActive) {
 						textToSpeechButtonIsActive = false;
-						textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureInactive);
+						//textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureInactive);
 					} 
 					else 
 					{
 						textToSpeechButtonIsActive = true;
-						textToSpeechButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", textToSpeechTextureActive);
+						//textToSpeechButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", textToSpeechTextureActive);
 					}
 				}
 
@@ -293,12 +297,12 @@ public class MenuManager : MonoBehaviour {
 
 					if (highlightPointsButtonIsActive) {
 						highlightPointsButtonIsActive = false;
-						highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureInactive);
+						//highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureInactive);
 					} 
 					else 
 					{
 						highlightPointsButtonIsActive = true;
-						highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureActive);
+						//highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureActive);
 					}
 
 				}
@@ -308,12 +312,12 @@ public class MenuManager : MonoBehaviour {
 
 					if (scribblerButtonIsActive) {
 						scribblerButtonIsActive = false;
-						scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureInactive);
+						//scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureInactive);
 					} 
 					else 
 					{
 						scribblerButtonIsActive = true;
-						scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureActive);
+						//scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureActive);
 					}
 				}	
 			}

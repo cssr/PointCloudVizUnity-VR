@@ -17,8 +17,28 @@ public class AnnotationManager {
 	}
 
 
-	public void AddScribblerAnnotation(ScribblerAnnotation sbAnnotation) {
+	public void AddScribblerAnnotation(List<LineRenderer> lineRenderers) {
+		ScribblerAnnotation sbAnnotation = new ScribblerAnnotation();
+		sbAnnotation.ID = ScribblerAnnotationList.Count + 1;
+		sbAnnotation.lineRenderers = lineRenderers;
 		ScribblerAnnotationList.Add (sbAnnotation);
+	}
+
+	public void DeleteScribblerAnnotation(ScribblerAnnotation sbAnnotation){
+		if(sbAnnotation == null){
+			Debug.Log("ERROR: ScribblerAnnotation object is null");
+			return;
+		}
+
+		foreach (ScribblerAnnotation annotation in ScribblerAnnotationList) {
+			if (annotation.ID == sbAnnotation.ID) {
+				ScribblerAnnotationList.Remove (annotation);
+				Debug.Log ("ScribblerAnnotation - " + sbAnnotation.ID + " was delete from list");
+			}
+			else
+				Debug.Log ("ERROR: Unable to delete ScribblerAnnotation - " + sbAnnotation.ID);
+		}
+		Debug.Log ("ERROR: Unable to find the ScribblerAnnotation - " + sbAnnotation.ID);
 	}
 
 	public void AddTextToSpeechAnnotation(string text, Vector3 pos){
@@ -29,7 +49,6 @@ public class AnnotationManager {
 	}
 
 	public void DeleteTextToSpeechAnnotation(TextToSpeechAnnotation ttsAnnotation){
-
 		if(ttsAnnotation == null) {
 			Debug.Log("ERROR: TextToSpeechAnnotation object is null");
 			return;
