@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class HighlightPointsAnnotation : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public int ID { get; set; }
+    // Use this for initialization
+    void Start () {
 		
 	}
 	

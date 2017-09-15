@@ -10,17 +10,17 @@ public class AnnotationManager {
 	List<HighlightPointsAnnotation> HighlightPointsAnnotationList { get; set;}
 
 	// Use this for initialization
-	void Init () {
+	public AnnotationManager() {
 		ScribblerAnnotationList = new List<ScribblerAnnotation>();
 		TextToSpeechAnnotationList = new List<TextToSpeechAnnotation>();
 		HighlightPointsAnnotationList = new List<HighlightPointsAnnotation>();
 	}
 
 
-	public void AddScribblerAnnotation(List<LineRenderer> lineRenderers) {
+	public void AddScribblerAnnotation(GameObject lineRendererGO) {
 		ScribblerAnnotation sbAnnotation = new ScribblerAnnotation();
 		sbAnnotation.ID = ScribblerAnnotationList.Count + 1;
-		sbAnnotation.lineRenderers = lineRenderers;
+		sbAnnotation.LineRendererGO = lineRendererGO;
 		ScribblerAnnotationList.Add (sbAnnotation);
 	}
 

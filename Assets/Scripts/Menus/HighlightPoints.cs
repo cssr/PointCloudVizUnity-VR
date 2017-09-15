@@ -30,7 +30,6 @@ public class HighlightPoints : MonoBehaviour {
 		if (!IsActive)
 		{
 			_myPoints.Clear();
-			IsActive = true;
 		}
 		_myPoints.Add(_rightHand.position);
 

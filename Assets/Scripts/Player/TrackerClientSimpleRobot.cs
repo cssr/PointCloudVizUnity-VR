@@ -17,7 +17,7 @@ public class TrackerClientSimpleRobot : MonoBehaviour
     public const float ballSize = 0.1f;
     public const float boneSize = 0.05f;
     public bool showHead = true;
-
+    private bool init = false;
 
     // Body transforms and joints
 
@@ -183,8 +183,9 @@ public class TrackerClientSimpleRobot : MonoBehaviour
 
     void Update()
 	{
-		if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.C)) // Mouse tap
+		if (!init && Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.C)) // Mouse tap
 		{
+            init = true;
 			string currentHumanId = GetHumanIdWithHandUp();
 
 			if (humans.ContainsKey(currentHumanId)) 

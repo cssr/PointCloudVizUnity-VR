@@ -5,7 +5,10 @@ using UnityEngine;
 public class ScribblerAnnotation {
 
 	public int ID { get; set; }
-	public List<LineRenderer> lineRenderers { get; set; }
-	public Dictionary<BodyJointType, Vector3> Joints { get; set; }
+	public GameObject LineRendererGO { get; set; }
+
+    public ScribblerAnnotation() {
+        ID = 0;
+    }
 
 }

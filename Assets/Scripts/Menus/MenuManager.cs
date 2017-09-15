@@ -8,6 +8,7 @@ public class MenuManager : MonoBehaviour {
     
 	public GameObject character;
     public GameObject menu;
+    public GameObject skeletonPlayer;
 
 	private GameObject textToSpeechButton;
 	private bool textToSpeechButtonIsActive;
@@ -38,6 +39,9 @@ public class MenuManager : MonoBehaviour {
    
 	private AnnotationManager annotationManager;
 
+	TrackerClientSimpleRobot trackerClientSimpleRobot;
+    TrackerClientRecorded trackerClientRecorded;
+    FileListener fileListener;
 	RaycastHit hit;
 
     // Use this for initialization
@@ -47,13 +51,16 @@ public class MenuManager : MonoBehaviour {
         scribbler = GetComponent<Scribbler>();
         highlightPoints = GetComponent<HighlightPoints>();
         changeColor = GetComponent<ChangeColor>();
-
         if (character != null)
 		{
-			TrackerClientSimpleRobot tcsr = character.GetComponent<TrackerClientSimpleRobot>();
-			_rightHand = tcsr.getRightArm();
+			trackerClientSimpleRobot = character.GetComponent<TrackerClientSimpleRobot>();
+            _rightHand = trackerClientSimpleRobot.getRightArm();
 		}
-
+        if(skeletonPlayer != null)
+        {
+            trackerClientRecorded = skeletonPlayer.GetComponent<TrackerClientRecorded>();
+            fileListener = skeletonPlayer.GetComponent<FileListener>();
+        }
         clouds = GameObject.FindObjectsOfType<PointCloud>();
         StartCoroutine(InputListener());
 
@@ -84,14 +91,13 @@ public class MenuManager : MonoBehaviour {
     {
         while (enabled)
         { //Run as long as this is activ
-
             if (Input.GetMouseButtonDown(0))
                 yield return LeftMouseClickEvent();
 
-			if (Input.GetMouseButtonUp (0))
+			if (Input.GetMouseButtonUp (0)) 
 				yield return LeftMouseReleaseEvent ();
 
-            if(Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1))
                 yield return RightMouseClickEvent();
 
             if(Input.GetMouseButtonDown(2))
@@ -117,7 +123,31 @@ public class MenuManager : MonoBehaviour {
             count += Time.deltaTime;// increment counter by change in time between frames
             yield return null; // wait for the next frame
         }
-        LeftMouseButtonSingleClick();
+
+        Debug.Log("Scribbler button isActive = " + scribblerButtonIsActive);
+        Debug.Log("Scribbler isActive = " + scribbler.IsActive);
+        if (scribblerButtonIsActive)
+        {
+            // todo change texture in 3D Menu
+            LeftMouseButtonDoubleClick();
+            scribbler.createRenderer();
+            scribbler.IsActive = true;
+            menu.SetActive(false);
+            Debug.Log("Testing scribbler");
+        }
+
+        if (highlightPointsButtonIsActive)
+        {
+            // todo change texture in 3D Menu
+            LeftMouseButtonDoubleClick();
+            highlightPoints.IsActive = true;
+            menu.SetActive(false);
+            Debug.Log("Testing highlight");
+        }
+
+        Debug.Log("mouse button down");
+        
+        //LeftMouseButtonSingleClick();
     }
 
 	private IEnumerator LeftMouseReleaseEvent(){
@@ -125,14 +155,19 @@ public class MenuManager : MonoBehaviour {
 		//pause a frame so you don't pick up the same mouse down event.
 		yield return new WaitForEndOfFrame();
 
-		if (scribblerButtonIsActive) {
-			scribbler.IsActive = false; 
-			annotationManager.AddScribblerAnnotation (scribbler.LineRenderers);
+        Debug.Log("release Scribbler button isActive = " + scribblerButtonIsActive);
+        Debug.Log("release Scribbler isActive = " + scribbler.IsActive);
+        if (scribblerButtonIsActive) {
+			scribbler.IsActive = false;
+           // scribbler.assignClosestBone(trackerClientRecorded.Humans);
+			annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO);
 		}
 
 		if (highlightPointsButtonIsActive)
 			highlightPoints.IsActive = false;
-	}
+            //annotationManager.AddHighlightPointsAnnotation();
+
+    }
 
     private IEnumerator RightMouseClickEvent()
     {
@@ -174,60 +209,20 @@ public class MenuManager : MonoBehaviour {
 
     private void LeftMouseButtonSingleClick()
     {
-		// TODO: check if this is the best place to do this. It doesnt work on the start because the 3DMenu gameobject is disable!
-		if(scribblerButton == null)
-			scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
-
-		if(highlightPointsButton == null)
-			highlightPointsButton = GameObject.FindGameObjectWithTag ("HighlightPoints");
-
-		if(textToSpeechButton == null)
-			textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
-
-		if (scribblerButtonIsActive) {
-			// todo change texture in 3D Menu
-			scribbler.IsActive = true;
-			Debug.Log ("Testing scribbler");
-		}
-
-		if (highlightPointsButtonIsActive) {
-			// todo change texture in 3D Menu
-			highlightPoints.IsActive = true;
-			Debug.Log ("Testing highlight");
-		}
-
-		if (textToSpeechButtonIsActive) {
-			textToSpeech.IsActive = true;
-			Debug.Log ("Testing Speech to Text");
-		} 
-		else {
-			textToSpeech.IsActive = false;
-			annotationManager.AddTextToSpeechAnnotation (textToSpeech.text, textToSpeech.position);
-		}
-	
+        
+        Debug.Log("Left Mouse Button Single Click");
     }
 
+    
     private void LeftMouseButtonDoubleClick()
     {
         Debug.Log("Left Mouse Button Double Click");
+        fileListener.playing = !fileListener.playing;
+
         foreach (PointCloud pc in clouds)
         {
-
-            if (pc.playing)
-            {
-                //pause - change texture to pause
-                pc.playing = false;
-               
-            }
-            else
-            {
-                // play - change texture to play
-                pc.playing = true;
-
-            }
+            pc.playing = !pc.playing;
         }
-			
-		Debug.Log("Left Mouse Button Single Click");
     }
 
     private void RightMouseButtonSingleClick()
@@ -242,9 +237,12 @@ public class MenuManager : MonoBehaviour {
         {
 			Debug.Log ("3D menu is " + menu.activeSelf);
             menu.SetActive(true);
-			menu.transform.position = character.transform.position;
-			//menu.transform.Translate(10.0f, 0.0f, 0.0f);
-			menu.transform.rotation = character.transform.rotation;
+			Transform headPosition = trackerClientSimpleRobot.getHead ();
+			Vector3 frontVector = Camera.main.transform.forward;
+
+			menu.transform.position = headPosition.position;
+			menu.transform.Translate(1.0f * frontVector.x, 1.0f * frontVector.y, 1.0f * frontVector.z);
+
         }
     }
 
@@ -266,12 +264,21 @@ public class MenuManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-    
-		scribblerButtonIsActive = true;
 
-		if (menu.activeSelf) {
-			// draw raycast vector to interact with the 3D Menu
-			Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
+
+        if (menu.activeSelf) {
+            if (scribblerButton == null)
+                scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
+
+            if (highlightPointsButton == null)
+                highlightPointsButton = GameObject.FindGameObjectWithTag("HighlightPoints");
+
+            //	if(textToSpeechButton == null)
+            //	textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
+
+            // draw raycast vector to interact with the 3D Menu
+            //Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
+            Vector3 forward = Camera.main.transform.forward;
 			Debug.DrawRay (_rightHand.transform.position, forward, Color.green, 1, false);
 
 			if (Physics.Raycast (_rightHand.transform.position, forward, out hit)) {
@@ -279,7 +286,7 @@ public class MenuManager : MonoBehaviour {
 
 
 				// SPEECH TO TEXT
-				if (hit.collider.name.Equals ("TextToSpeech")) {
+				/*if (hit.collider.name.Equals ("TextToSpeech")) {
 
 					if (textToSpeechButtonIsActive) {
 						textToSpeechButtonIsActive = false;
@@ -290,37 +297,43 @@ public class MenuManager : MonoBehaviour {
 						textToSpeechButtonIsActive = true;
 						//textToSpeechButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", textToSpeechTextureActive);
 					}
-				}
+				}*/
 
 				// HIGHLIGHT POINTS
 				if (hit.collider.name.Equals("HighlightPoints")){
+                    highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureActive);
 
-					if (highlightPointsButtonIsActive) {
+                    if (highlightPointsButtonIsActive) {
 						highlightPointsButtonIsActive = false;
-						//highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureInactive);
-					} 
+                    } 
 					else 
 					{
 						highlightPointsButtonIsActive = true;
-						//highlightPointsButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", highlightPointsTextureActive);
-					}
+                    }
+                }
+                else
+                {
+                    highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureInactive);
 
-				}
+                }
 
-				// SCRIBBLER
-				if(hit.collider.name.Equals("Scribbler")){
-
-					if (scribblerButtonIsActive) {
+                // SCRIBBLER
+                if (hit.collider.name.Equals("Scribbler")){
+                    scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureActive);
+                    if (scribblerButtonIsActive) {
 						scribblerButtonIsActive = false;
-						//scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureInactive);
-					} 
+                    } 
 					else 
 					{
 						scribblerButtonIsActive = true;
-						//scribblerButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", scribblerTextureActive);
-					}
-				}	
-			}
+                    }
+                }
+                else
+                {
+                    scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureInactive);
+
+                }
+            }
 		}
 	}
 }

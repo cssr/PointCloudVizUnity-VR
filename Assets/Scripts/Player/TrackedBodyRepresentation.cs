@@ -6,8 +6,9 @@ public class TrackedBodyRepresentation  {
 
 	public const float ballSize = 0.1f;
 	public const float boneSize = 0.05f;
-	// Body transforms and joints
+    // Body transforms and joints
 
+    public List<Transform> bodyTransforms;
 	// Spine
 	public Transform spineBase;
 	public Transform spineShoulder;
@@ -63,6 +64,7 @@ public class TrackedBodyRepresentation  {
 
 	// Use this for initialization
 	public TrackedBodyRepresentation () {
+        bodyTransforms = new List<Transform>();
 
 		spineBaseJoint = new PointSmoothing();
 		spineShoulderJoint = new PointSmoothing();
@@ -83,6 +85,7 @@ public class TrackedBodyRepresentation  {
 		rightAnkleJoint = new PointSmoothing();
 
 		GameObject avatarGo = new GameObject();
+        avatarGo.transform.parent = GameObject.Find("Data").transform;
 
 		spineBase = createAvatarJoint(avatarGo.transform,"spineBase");
 		spineShoulder = createAvatarJoint(avatarGo.transform,"spineShoulder");
@@ -130,6 +133,7 @@ public class TrackedBodyRepresentation  {
 		Transform transform = gameObject.transform;
 		transform.parent = parent;
 		transform.localScale *= scale;
+        bodyTransforms.Add(transform);
 		return transform;
 	}
 
@@ -138,6 +142,7 @@ public class TrackedBodyRepresentation  {
 		GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
 		Transform transform = gameObject.transform;
 		transform.parent = parent;
+        bodyTransforms.Add(transform);
 		return transform;
 	}
 	// Update is called once per frame
