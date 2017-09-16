@@ -36,7 +36,7 @@ public class TrackerClientRecorded : MonoBehaviour
 		}
 
 		// Finally
-		CleanDeadHumans();
+		//CleanDeadHumans();
 		isNewFrame = false;
 	}
 

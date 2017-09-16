@@ -67,7 +67,9 @@ public class AnnotationManager {
 		Debug.Log ("ERROR: Unable to find the TextToSpeechAnnotation - " + ttsAnnotation.Text);
 	}
 
-	public void AddHighlightPointsAnnotation(HighlightPointsAnnotation hpAnnotation){
-		HighlightPointsAnnotationList.Add (hpAnnotation);
+	public void AddHighlightPointsAnnotation(List<Transform> bones){
+        HighlightPointsAnnotation hpAnnotation = new HighlightPointsAnnotation();
+        hpAnnotation.Bones = bones;
+        HighlightPointsAnnotationList.Add (hpAnnotation);
 	}
 }

@@ -61,6 +61,7 @@ public class Scribbler : MonoBehaviour {
     public void assignClosestBone(Dictionary<string,Human> humans)
     {
         float minDist = float.MaxValue;
+        float maxDist = 1f;
         Transform minTransf = null;
         foreach (Human h in humans.Values)
         {
@@ -68,7 +69,7 @@ public class Scribbler : MonoBehaviour {
             foreach (Transform t in transfs)
             {
                 float dist = (lineRendererGO.transform.localPosition - t.position).magnitude;
-                if (dist < minDist)
+                if (dist < minDist && dist < maxDist)
                 {
                     minDist = dist;
                     minTransf = t;

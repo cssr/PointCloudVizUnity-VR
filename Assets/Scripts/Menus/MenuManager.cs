@@ -28,25 +28,29 @@ public class MenuManager : MonoBehaviour {
 	private HighlightPoints highlightPoints;
 	private ChangeColor changeColor;
 
-	private Texture textToSpeechTextureActive;
-	private Texture textToSpeechTextureInactive;
+    private Texture textToSpeechTextureActive;
+    private Texture textToSpeechTextureInactive;
 
-	private Texture scribblerTextureActive;
-	private Texture scribblerTextureInactive;
+    private Texture scribblerTextureActive;
+    private Texture scribblerTextureInactive;
 
-	private Texture highlightPointsTextureActive;
-	private Texture highlightPointsTextureInactive;
-   
-	private AnnotationManager annotationManager;
+    private Texture highlightPointsTextureActive;
+    private Texture highlightPointsTextureInactive;
+
+    private AnnotationManager annotationManager;
 
 	TrackerClientSimpleRobot trackerClientSimpleRobot;
     TrackerClientRecorded trackerClientRecorded;
     FileListener fileListener;
 	RaycastHit hit;
 
+    bool lmbclicked;
+    float deltaLastClick;
+    float deltaHoldTime;
+
     // Use this for initialization
     protected void Start () {
-
+        lmbclicked = false;
         textToSpeech = GetComponent<TextToSpeech>();
         scribbler = GetComponent<Scribbler>();
         highlightPoints = GetComponent<HighlightPoints>();
@@ -62,7 +66,7 @@ public class MenuManager : MonoBehaviour {
             fileListener = skeletonPlayer.GetComponent<FileListener>();
         }
         clouds = GameObject.FindObjectsOfType<PointCloud>();
-        StartCoroutine(InputListener());
+       // StartCoroutine(InputListener());
 
 		// get menu gameobject choices
 
@@ -73,143 +77,132 @@ public class MenuManager : MonoBehaviour {
 		scribblerButtonIsActive = false;
 		highlightPointsButtonIsActive = false;
 
-		//Load menu buttons textures
-		textToSpeechTextureActive = Resources.Load("textToSpeechTexActive") as Texture;
-		textToSpeechTextureInactive = Resources.Load("textToSpeechTexInactive") as Texture;
+        //Load menu buttons textures
+        textToSpeechTextureActive = Resources.Load("textToSpeechActive") as Texture;
+        textToSpeechTextureInactive = Resources.Load("textToSpeech") as Texture;
 
-		scribblerTextureActive = Resources.Load("scribblerTexActive") as Texture;
-		scribblerTextureInactive = Resources.Load("scribblerTexInactive") as Texture;
+        scribblerTextureActive = Resources.Load("scribblerActive") as Texture;
+        scribblerTextureInactive = Resources.Load("scribbler") as Texture;
 
-		highlightPointsTextureActive = Resources.Load("highlightPointsTexActive") as Texture;
-		highlightPointsTextureInactive = Resources.Load("highlightPointsTexInactive") as Texture;
+        highlightPointsTextureActive = Resources.Load("highlightPointsActive") as Texture;
+        highlightPointsTextureInactive = Resources.Load("highlightPoints") as Texture;
 
-		annotationManager = new AnnotationManager ();
+        annotationManager = new AnnotationManager ();
     }
 
     // Update is called once per frame
-    private IEnumerator InputListener()
+    private void handleInput()
     {
-        while (enabled)
-        { //Run as long as this is activ
+       
+            deltaLastClick += Time.deltaTime;
+            if (lmbclicked) 
+                deltaHoldTime += Time.deltaTime;
+            
+
+            if (lmbclicked && deltaHoldTime > doubleClickTimeLimit) 
+                  LeftMouseButtonHoldDown();
+
             if (Input.GetMouseButtonDown(0))
-                yield return LeftMouseClickEvent();
+                  LeftMouseClickEvent();
 
 			if (Input.GetMouseButtonUp (0)) 
-				yield return LeftMouseReleaseEvent ();
-
+                  LeftMouseReleaseEvent ();
             if (Input.GetMouseButtonDown(1))
-                yield return RightMouseClickEvent();
+                  RightMouseClickEvent();
 
             if(Input.GetMouseButtonDown(2))
-                yield return WheelMouseClickEvent();
+                  WheelMouseClickEvent();
 
-            yield return null;
-        }
+    
     }
 
-    private IEnumerator LeftMouseClickEvent()
+    private void LeftMouseClickEvent()
     {
         //pause a frame so you don't pick up the same mouse down event.
-        yield return new WaitForEndOfFrame();
+      //  yield return new WaitForEndOfFrame();
 
-        float count = 0f;
-        while (count < doubleClickTimeLimit)
+        lmbclicked = true;
+
+        if (deltaLastClick <= doubleClickTimeLimit)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                LeftMouseButtonDoubleClick();
-                yield break;
-            }
-            count += Time.deltaTime;// increment counter by change in time between frames
-            yield return null; // wait for the next frame
+            LeftMouseButtonDoubleClick();
         }
+
+        deltaLastClick = 0;
+
 
         Debug.Log("Scribbler button isActive = " + scribblerButtonIsActive);
         Debug.Log("Scribbler isActive = " + scribbler.IsActive);
-        if (scribblerButtonIsActive)
+       
+        LeftMouseButtonSingleClick();
+
+    }
+
+
+    private void LeftMouseButtonHoldDown()
+    {
+        if (scribblerButtonIsActive && !scribbler.IsActive)
         {
             // todo change texture in 3D Menu
             LeftMouseButtonDoubleClick();
             scribbler.createRenderer();
             scribbler.IsActive = true;
-            menu.SetActive(false);
             Debug.Log("Testing scribbler");
         }
 
-        if (highlightPointsButtonIsActive)
+        if (highlightPointsButtonIsActive && !highlightPoints.IsActive)
         {
             // todo change texture in 3D Menu
             LeftMouseButtonDoubleClick();
             highlightPoints.IsActive = true;
-            menu.SetActive(false);
+        
             Debug.Log("Testing highlight");
         }
 
         Debug.Log("mouse button down");
-        
-        //LeftMouseButtonSingleClick();
+
     }
 
-	private IEnumerator LeftMouseReleaseEvent(){
+
+    private void LeftMouseReleaseEvent(){
 		
 		//pause a frame so you don't pick up the same mouse down event.
-		yield return new WaitForEndOfFrame();
+		//yield return new WaitForEndOfFrame();
+        lmbclicked = false;
 
-        Debug.Log("release Scribbler button isActive = " + scribblerButtonIsActive);
-        Debug.Log("release Scribbler isActive = " + scribbler.IsActive);
-        if (scribblerButtonIsActive) {
+        Debug.Log("LMB RELEASE");
+        if (scribblerButtonIsActive && deltaHoldTime > doubleClickTimeLimit) {
 			scribbler.IsActive = false;
-           // scribbler.assignClosestBone(trackerClientRecorded.Humans);
+            scribbler.assignClosestBone(trackerClientRecorded.Humans);
 			annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO);
 		}
 
-		if (highlightPointsButtonIsActive)
+		if (highlightPointsButtonIsActive && deltaHoldTime > doubleClickTimeLimit) { 
 			highlightPoints.IsActive = false;
-            //annotationManager.AddHighlightPointsAnnotation();
+            annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms);
+        }
+        deltaHoldTime = 0;
 
     }
 
-    private IEnumerator RightMouseClickEvent()
+    private void RightMouseClickEvent()
     {
-        //pause a frame so you don't pick up the same mouse down event.
-        yield return new WaitForEndOfFrame();
+       
 
-        float count = 0f;
-        while (count < doubleClickTimeLimit)
-        {
-            if (Input.GetMouseButtonDown(1))
-            {
-                RightMouseButtonDoubleClick();
-                yield break;
-            }
-            count += Time.deltaTime;// increment counter by change in time between frames
-            yield return null; // wait for the next frame
-        }
+     
         RightMouseButtonSingleClick();
     }
 
-    private IEnumerator WheelMouseClickEvent()
+    private void WheelMouseClickEvent()
     {
-        //pause a frame so you don't pick up the same mouse down event.
-        yield return new WaitForEndOfFrame();
-
-        float count = 0f;
-        while (count < doubleClickTimeLimit)
-        {
-            if (Input.GetMouseButtonDown(2))
-            {
-                WheelMouseButtonDoubleClick();
-                yield break;
-            }
-            count += Time.deltaTime;// increment counter by change in time between frames
-            yield return null; // wait for the next frame
-        }
+       
+       
         WheelMouseButtonSingleClick();
     }
 
     private void LeftMouseButtonSingleClick()
     {
-        
+        menu.SetActive( false);
         Debug.Log("Left Mouse Button Single Click");
     }
 
@@ -239,9 +232,13 @@ public class MenuManager : MonoBehaviour {
             menu.SetActive(true);
 			Transform headPosition = trackerClientSimpleRobot.getHead ();
 			Vector3 frontVector = Camera.main.transform.forward;
+            menu.transform.position = Vector3.zero;
+            menu.transform.rotation = Quaternion.identity;
 
-			menu.transform.position = headPosition.position;
+            menu.transform.position = headPosition.position;
 			menu.transform.Translate(1.0f * frontVector.x, 1.0f * frontVector.y, 1.0f * frontVector.z);
+            menu.transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
+         //   menu.transform.up = Camera.main.transform.up;
 
         }
     }
@@ -265,7 +262,7 @@ public class MenuManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-
+        handleInput();
         if (menu.activeSelf) {
             if (scribblerButton == null)
                 scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
@@ -303,6 +300,7 @@ public class MenuManager : MonoBehaviour {
 				if (hit.collider.name.Equals("HighlightPoints")){
                     highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureActive);
 
+
                     if (highlightPointsButtonIsActive) {
 						highlightPointsButtonIsActive = false;
                     } 
@@ -314,12 +312,11 @@ public class MenuManager : MonoBehaviour {
                 else
                 {
                     highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureInactive);
-
                 }
 
                 // SCRIBBLER
                 if (hit.collider.name.Equals("Scribbler")){
-                    scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureActive);
+                    scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex",scribblerTextureActive);
                     if (scribblerButtonIsActive) {
 						scribblerButtonIsActive = false;
                     } 
@@ -331,6 +328,7 @@ public class MenuManager : MonoBehaviour {
                 else
                 {
                     scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureInactive);
+
 
                 }
             }
