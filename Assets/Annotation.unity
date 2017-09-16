@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 489658490}
   m_Layer: 0
   m_Name: TextToSpeech
-  m_TagString: ChangeColor
+  m_TagString: TextToSpeech
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -753,7 +753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df4f0d1aa4ca31a44ab03b3eb216acaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileLocation: C:\Users\vimmi\Documents\Blackbox Capture\skeleton recorder\15046261188196583.txt
+  fileLocation: C:\Users\ASUS\Desktop\Blackbox Capture\skeleton recorder\15023825687883502.txt
   playing: 0
 --- !u!4 &1016402958
 Transform:

@@ -19,6 +19,12 @@ public class MenuManager : MonoBehaviour {
 	private GameObject highlightPointsButton;
 	private bool highlightPointsButtonIsActive;
 
+	private GameObject changeColorButton;
+	private bool changeColorButtonIsActive;
+
+	private GameObject deleteButton;
+	private bool deleteButtonIsActive;
+
     private Transform _rightHand;
     private float doubleClickTimeLimit = 0.25f;
     private PointCloud[] clouds = null;
@@ -36,6 +42,12 @@ public class MenuManager : MonoBehaviour {
 
     private Texture highlightPointsTextureActive;
     private Texture highlightPointsTextureInactive;
+
+	private Texture changeColorTextureActive;
+	private Texture changeColorTextureInactive;
+
+	private Texture deleteTextureActive;
+	private Texture deleteTextureInactive;
 
     private AnnotationManager annotationManager;
 
@@ -66,16 +78,12 @@ public class MenuManager : MonoBehaviour {
             fileListener = skeletonPlayer.GetComponent<FileListener>();
         }
         clouds = GameObject.FindObjectsOfType<PointCloud>();
-       // StartCoroutine(InputListener());
-
-		// get menu gameobject choices
-
-	/*	textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
-		scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
-		highlightPointsButton = GameObject.FindGameObjectWithTag ("HighlightPoints"); */
+      
 		textToSpeechButtonIsActive = false;
 		scribblerButtonIsActive = false;
 		highlightPointsButtonIsActive = false;
+		changeColorButtonIsActive = false;
+		deleteButtonIsActive = false;
 
         //Load menu buttons textures
         textToSpeechTextureActive = Resources.Load("textToSpeechActive") as Texture;
@@ -87,11 +95,18 @@ public class MenuManager : MonoBehaviour {
         highlightPointsTextureActive = Resources.Load("highlightPointsActive") as Texture;
         highlightPointsTextureInactive = Resources.Load("highlightPoints") as Texture;
 
+		changeColorTextureActive = Resources.Load("changeColorActive") as Texture;
+		changeColorTextureInactive = Resources.Load("changeColor") as Texture;
+
+		deleteTextureActive = Resources.Load ("deleteActive") as Texture;
+		deleteTextureInactive = Resources.Load ("delete") as Texture;
+
+
         annotationManager = new AnnotationManager ();
     }
 
     // Update is called once per frame
-    private void handleInput()
+    private void handleMouseInput()
     {
        
             deltaLastClick += Time.deltaTime;
@@ -107,6 +122,7 @@ public class MenuManager : MonoBehaviour {
 
 			if (Input.GetMouseButtonUp (0)) 
                   LeftMouseReleaseEvent ();
+		
             if (Input.GetMouseButtonDown(1))
                   RightMouseClickEvent();
 
@@ -259,23 +275,27 @@ public class MenuManager : MonoBehaviour {
        
     }
 
-    // Update is called once per frame
-    void Update () {
+	private void HandleMenuOptions() {
+	
+		if (menu.activeSelf) {
+			if (scribblerButton == null)
+				scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
 
-        handleInput();
-        if (menu.activeSelf) {
-            if (scribblerButton == null)
-                scribblerButton = GameObject.FindGameObjectWithTag("Scribbler");
+			if (highlightPointsButton == null)
+				highlightPointsButton = GameObject.FindGameObjectWithTag("HighlightPoints");
 
-            if (highlightPointsButton == null)
-                highlightPointsButton = GameObject.FindGameObjectWithTag("HighlightPoints");
+			if(textToSpeechButton == null)
+				textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
 
-            //	if(textToSpeechButton == null)
-            //	textToSpeechButton = GameObject.FindGameObjectWithTag("TextToSpeech");
+			if(changeColorButton == null)
+				changeColorButton = GameObject.FindGameObjectWithTag("ChangeColor");
 
-            // draw raycast vector to interact with the 3D Menu
-            //Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
-            Vector3 forward = Camera.main.transform.forward;
+			if (deleteButton == null)
+				deleteButton = GameObject.FindGameObjectWithTag ("Delete");
+
+			// draw raycast vector to interact with the 3D Menu
+			//Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
+			Vector3 forward = Camera.main.transform.forward;
 			Debug.DrawRay (_rightHand.transform.position, forward, Color.green, 1, false);
 
 			if (Physics.Raycast (_rightHand.transform.position, forward, out hit)) {
@@ -283,55 +303,92 @@ public class MenuManager : MonoBehaviour {
 
 
 				// SPEECH TO TEXT
-				/*if (hit.collider.name.Equals ("TextToSpeech")) {
-
+				if (hit.collider.name.Equals ("TextToSpeech")) {
+					textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureActive);
 					if (textToSpeechButtonIsActive) {
 						textToSpeechButtonIsActive = false;
-						//textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureInactive);
-					} 
-					else 
-					{
+					} else {
 						textToSpeechButtonIsActive = true;
-						//textToSpeechButton.GetComponent<Renderer> ().material.SetTexture("_MainTex", textToSpeechTextureActive);
 					}
-				}*/
+				} else
+				{
+					textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureInactive);
+				}
 
 				// HIGHLIGHT POINTS
 				if (hit.collider.name.Equals("HighlightPoints")){
-                    highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureActive);
-
-
-                    if (highlightPointsButtonIsActive) {
+					highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureActive);
+					if (highlightPointsButtonIsActive) {
 						highlightPointsButtonIsActive = false;
-                    } 
+					} 
 					else 
 					{
 						highlightPointsButtonIsActive = true;
-                    }
-                }
-                else
-                {
-                    highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureInactive);
-                }
+					}
+				}
+				else
+				{
+					highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureInactive);
+				}
 
-                // SCRIBBLER
-                if (hit.collider.name.Equals("Scribbler")){
-                    scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex",scribblerTextureActive);
-                    if (scribblerButtonIsActive) {
+				// SCRIBBLER
+				if (hit.collider.name.Equals("Scribbler")){
+					scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex",scribblerTextureActive);
+					if (scribblerButtonIsActive) {
 						scribblerButtonIsActive = false;
-                    } 
+					} 
 					else 
 					{
 						scribblerButtonIsActive = true;
-                    }
-                }
-                else
-                {
-                    scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureInactive);
+					}
+				}
+				else
+				{
+					scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureInactive);
+				}
 
+				// CHANGE COLOR
+				if (hit.collider.name.Equals ("ChangeColor")) {
+					changeColorButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", changeColorTextureActive);
+					if (changeColorButtonIsActive) {
+						changeColorButtonIsActive = false;
+					} else 
+					{
+						changeColorButtonIsActive = true;
+					}
+				} 
+				else
+				{
+					changeColorButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", changeColorTextureInactive);
+				}
 
-                }
-            }
+				// DELETE
+				if (hit.collider.name.Equals ("Delete")) {
+					deleteButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", deleteTextureActive);
+					if (deleteButtonIsActive) {
+						deleteButtonIsActive = false;
+					} else {
+						deleteButtonIsActive = true;
+					}
+				} 
+				else 
+				{
+					deleteButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", deleteTextureInactive);
+				}
+			}
 		}
+	}
+
+    // Update is called once per frame
+    void Update () {
+
+        handleMouseInput();
+		HandleMenuOptions ();
+
+		//DEBUG
+		if (menu.activeSelf) {
+			//changeColorButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", changeColorTextureActive);
+		}
+
 	}
 }
