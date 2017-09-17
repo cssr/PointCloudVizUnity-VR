@@ -72,4 +72,29 @@ public class AnnotationManager {
         hpAnnotation.Bones = bones;
         HighlightPointsAnnotationList.Add (hpAnnotation);
 	}
+
+	public void SetAnnotationDuration(float duration, Vector3 position){
+	
+		float minDist = 0.2f;
+		foreach(ScribblerAnnotation sa in ScribblerAnnotationList) { 
+			if (sa.IsAnnotationCloseToPosition (position, minDist)) {
+				sa.Duration = duration;
+				return;
+			}
+		}
+
+		foreach(TextToSpeechAnnotation ta in TextToSpeechAnnotationList) { 
+			if (ta.IsAnnotationCloseToPosition (position, minDist)) {
+				ta.Duration = duration;
+				return;
+			}
+		}
+
+		foreach(HighlightPointsAnnotation ha in HighlightPointsAnnotationList) {
+			if (ha.IsAnnotationCloseToPosition (position, minDist)) {
+				ha.Duration = duration;
+				return;
+			}	
+		}
+	}
 }

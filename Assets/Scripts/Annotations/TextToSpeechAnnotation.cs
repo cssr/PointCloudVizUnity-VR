@@ -6,7 +6,7 @@ public class TextToSpeechAnnotation {
 	public int ID { get; set; }
 	public string Text { get; set; }
 	public Vector3 Position { get; set; }
-	float Duration { get; set; }
+	public float Duration { get; set; }
 
 	public TextToSpeechAnnotation () {
 		Text = "";
@@ -28,5 +28,12 @@ public class TextToSpeechAnnotation {
 
 	public bool isTheSameText(string text){
 		return (Text.Equals (text));
+	}
+
+	public bool IsAnnotationCloseToPosition(Vector3 pos, float minDist) {
+		if ((Position - pos).magnitude < minDist)
+			return true;
+
+		return false;
 	}
 }

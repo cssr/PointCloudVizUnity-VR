@@ -8,6 +8,9 @@ TagManager:
   - TextToSpeech
   - Scribbler
   - HighlightPoints
+  - Delete
+  - ChangeColor
+  - Duration
   layers:
   - Default
   - TransparentFX

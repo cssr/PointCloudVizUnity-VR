@@ -21,4 +21,13 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 	public bool isTheSameDuration(int duration){
 		return (Duration == duration);
 	}
+
+	public bool IsAnnotationCloseToPosition(Vector3 position, float minDist){
+
+		foreach (Transform t in Bones) {
+			if ((t.position - position).magnitude < minDist)
+				return true;
+		}
+		return false;
+	}
 }

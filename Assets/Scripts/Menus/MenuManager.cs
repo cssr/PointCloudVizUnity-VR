@@ -60,6 +60,11 @@ public class MenuManager : MonoBehaviour {
     float deltaLastClick;
     float deltaHoldTime;
 
+	//time the annotation will be active during playback
+	GameObject durationGO;
+	float duration;
+	bool isWheelActive;
+
     // Use this for initialization
     protected void Start () {
         lmbclicked = false;
@@ -101,6 +106,11 @@ public class MenuManager : MonoBehaviour {
 		deleteTextureActive = Resources.Load ("deleteActive") as Texture;
 		deleteTextureInactive = Resources.Load ("delete") as Texture;
 
+		duration = 0;
+
+		durationGO = GameObject.FindGameObjectWithTag ("Duration");
+		durationGO.SetActive (false);
+		isWheelActive = false;
 
         annotationManager = new AnnotationManager ();
     }
@@ -108,28 +118,49 @@ public class MenuManager : MonoBehaviour {
     // Update is called once per frame
     private void handleMouseInput()
     {
-       
-            deltaLastClick += Time.deltaTime;
-            if (lmbclicked) 
-                deltaHoldTime += Time.deltaTime;
-            
+   
+        deltaLastClick += Time.deltaTime;
+        if (lmbclicked) 
+            deltaHoldTime += Time.deltaTime;
+        
 
-            if (lmbclicked && deltaHoldTime > doubleClickTimeLimit) 
-                  LeftMouseButtonHoldDown();
+        if (lmbclicked && deltaHoldTime > doubleClickTimeLimit) 
+              LeftMouseButtonHoldDown();
 
-            if (Input.GetMouseButtonDown(0))
-                  LeftMouseClickEvent();
+        if (Input.GetMouseButtonDown(0))
+              LeftMouseClickEvent();
 
-			if (Input.GetMouseButtonUp (0)) 
-                  LeftMouseReleaseEvent ();
+		if (Input.GetMouseButtonUp (0)) 
+              LeftMouseReleaseEvent ();
+	
+        if (Input.GetMouseButtonDown(1))
+              RightMouseClickEvent();
+
+		if (Input.GetMouseButtonDown (2))
+			WheelMouseClickEvent ();
 		
-            if (Input.GetMouseButtonDown(1))
-                  RightMouseClickEvent();
+		if (isWheelActive) {
+			durationGO.SetActive (true);
+			//draw duration above right hand
+			/*durationGO.transform.position = _rightHand.transform.position;
+			Vector3 up = _rightHand.transform.up;
+			durationGO.transform.Translate (up.x * 0.1, up.y * 0.1, up.z * 0.1); */
+			
+			if (Input.GetAxisRaw ("Mouse ScrollWheel") > 0) {	
+				duration += Input.GetAxisRaw ("Mouse ScrollWheel");
+				durationGO.GetComponent<TextMesh> ().text = duration.ToString ();
+			}
 
-            if(Input.GetMouseButtonDown(2))
-                  WheelMouseClickEvent();
-
-    
+			if (Input.GetAxisRaw ("Mouse ScrollWheel") < 0) {
+				duration += Input.GetAxisRaw ("Mouse ScrollWheel");
+				if (duration < 0)
+					duration = 0.0f;
+				durationGO.GetComponent<TextMesh> ().text = duration.ToString ();
+			}
+			Debug.Log ("duration = " + duration);
+		}
+		else 
+			durationGO.SetActive (false);
     }
 
     private void LeftMouseClickEvent()
@@ -211,9 +242,13 @@ public class MenuManager : MonoBehaviour {
 
     private void WheelMouseClickEvent()
     {
-       
-       
-        WheelMouseButtonSingleClick();
+		isWheelActive = !isWheelActive;
+		if (!isWheelActive) {
+			annotationManager.SetAnnotationDuration (duration, _rightHand.transform.position);
+			duration = 0.0f;
+		}
+
+        //WheelMouseButtonSingleClick();
     }
 
     private void LeftMouseButtonSingleClick()

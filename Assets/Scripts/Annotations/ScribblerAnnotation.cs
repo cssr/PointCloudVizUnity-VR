@@ -22,4 +22,15 @@ public class ScribblerAnnotation {
 		return (Duration == duration);
 	}
 
+	public Vector3 GetPosition(){
+		return LineRendererGO.transform.localPosition; //not sure if is the local position or position
+	}
+
+	public bool IsAnnotationCloseToPosition(Vector3 position, float minDist){
+		if ((LineRendererGO.transform.position - position).magnitude < minDist)
+			return true;
+		
+		return false;
+	}
+
 }
