@@ -17,10 +17,11 @@ public class AnnotationManager {
 	}
 
 
-	public void AddScribblerAnnotation(GameObject lineRendererGO) {
+	public void AddScribblerAnnotation(GameObject lineRendererGO, float timeOfCreation) {
 		ScribblerAnnotation sbAnnotation = new ScribblerAnnotation();
 		sbAnnotation.ID = ScribblerAnnotationList.Count + 1;
 		sbAnnotation.LineRendererGO = lineRendererGO;
+		sbAnnotation.TimeOfCreation = timeOfCreation;
 		ScribblerAnnotationList.Add (sbAnnotation);
 	}
 
@@ -41,10 +42,11 @@ public class AnnotationManager {
 		Debug.Log ("ERROR: Unable to find the ScribblerAnnotation - " + sbAnnotation.ID);
 	}
 
-	public void AddTextToSpeechAnnotation(string text, Vector3 pos){
+	public void AddTextToSpeechAnnotation(string text, Vector3 pos, float timeOfCreation){
 		TextToSpeechAnnotation ttsAnnotation = new TextToSpeechAnnotation();
 		ttsAnnotation.Text = text;
 		ttsAnnotation.Position = pos;
+		ttsAnnotation.TimeOfCreation = timeOfCreation;
 		TextToSpeechAnnotationList.Add (ttsAnnotation);
 	}
 
@@ -67,9 +69,10 @@ public class AnnotationManager {
 		Debug.Log ("ERROR: Unable to find the TextToSpeechAnnotation - " + ttsAnnotation.Text);
 	}
 
-	public void AddHighlightPointsAnnotation(List<Transform> bones){
+	public void AddHighlightPointsAnnotation(List<Transform> bones, float timeOfCreation){
         HighlightPointsAnnotation hpAnnotation = new HighlightPointsAnnotation();
         hpAnnotation.Bones = bones;
+		hpAnnotation.TimeOfCreation = timeOfCreation;
         HighlightPointsAnnotationList.Add (hpAnnotation);
 	}
 
@@ -95,6 +98,50 @@ public class AnnotationManager {
 				ha.Duration = duration;
 				return;
 			}	
+		}
+	}
+
+	public void DrawScribblerAnnotations(){
+		foreach(ScribblerAnnotation sa in ScribblerAnnotationList) {
+			sa.Draw ();
+		}
+	}
+
+	public void DrawTextToSpeechAnnotations(){
+		foreach(TextToSpeechAnnotation ta in TextToSpeechAnnotationList) { 
+			ta.Draw ();
+		}
+	}
+
+	public void DrawHighlightPointsAnnotations(){
+		foreach(HighlightPointsAnnotation ha in HighlightPointsAnnotationList) {
+			ha.Draw ();	
+		}
+	}
+
+	public void Draw(){
+	
+		foreach(ScribblerAnnotation sa in ScribblerAnnotationList) {
+			sa.Draw ();
+		}
+			
+		foreach(HighlightPointsAnnotation ha in HighlightPointsAnnotationList) {
+			ha.Draw ();	
+		}
+	}
+
+	public void ResetDrawState(){
+	
+		foreach(ScribblerAnnotation sa in ScribblerAnnotationList) {
+				sa.ResetDrawState ();
+		}
+
+		foreach(TextToSpeechAnnotation ta in TextToSpeechAnnotationList) { 
+				ta.ResetDrawState ();
+		}
+
+		foreach(HighlightPointsAnnotation ha in HighlightPointsAnnotationList) {
+				ha.ResetDrawState ();	
 		}
 	}
 }

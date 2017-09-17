@@ -7,11 +7,14 @@ public class ScribblerAnnotation {
 	public int ID { get; set; }
 	public GameObject LineRendererGO { get; set; }
 	public float Duration { get; set; }
+	public bool HasBeenDrawn{ get; set; }
+	public float TimeOfCreation { get; set; }
 
     public ScribblerAnnotation() {
         ID = 0;
 		LineRendererGO = null;
 		Duration = 0.0f;
+		HasBeenDrawn = false;
     }
 
 	public bool isTheSameAnnotation(int id){
@@ -31,6 +34,22 @@ public class ScribblerAnnotation {
 			return true;
 		
 		return false;
+	}
+
+	public void Draw(){
+	
+		if (!HasBeenDrawn) {
+			LineRendererGO.SetActive (true);
+			HasBeenDrawn = true;
+		}
+	}
+
+	public void EndDraw(){
+		LineRendererGO.SetActive (false);
+	}
+
+	public void ResetDrawState(){
+		HasBeenDrawn = false;
 	}
 
 }

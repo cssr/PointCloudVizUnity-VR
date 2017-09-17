@@ -64,6 +64,12 @@ public class MenuManager : MonoBehaviour {
 	GameObject durationGO;
 	float duration;
 	bool isWheelActive;
+	enum TypeOfAnnotation {SCRIBBER, HIGHLIGHTPOINTS, TEXTTOSPEECH};
+
+	Dictionary<TypeOfAnnotation, float> timeOfCreationByAnnotationType;
+
+	int currentCloud;
+	float timeSinceExecutionStarted;
 
     // Use this for initialization
     protected void Start () {
@@ -112,7 +118,11 @@ public class MenuManager : MonoBehaviour {
 		durationGO.SetActive (false);
 		isWheelActive = false;
 
+		timeOfCreationByAnnotationType = new Dictionary<TypeOfAnnotation, float> (); 
+
         annotationManager = new AnnotationManager ();
+
+		currentCloud = 0;
     }
 
     // Update is called once per frame
@@ -221,12 +231,14 @@ public class MenuManager : MonoBehaviour {
         if (scribblerButtonIsActive && deltaHoldTime > doubleClickTimeLimit) {
 			scribbler.IsActive = false;
             scribbler.assignClosestBone(trackerClientRecorded.Humans);
-			annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO);
+			annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO, Time.time);
+			timeOfCreationByAnnotationType.Add (TypeOfAnnotation.SCRIBBER, Time.time);
 		}
 
 		if (highlightPointsButtonIsActive && deltaHoldTime > doubleClickTimeLimit) { 
 			highlightPoints.IsActive = false;
-            annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms);
+			annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms, Time.time);
+			timeOfCreationByAnnotationType.Add (TypeOfAnnotation.HIGHLIGHTPOINTS, Time.time);
         }
         deltaHoldTime = 0;
 
@@ -416,6 +428,34 @@ public class MenuManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+
+		timeSinceExecutionStarted += Time.time;
+
+		foreach(PointCloud pc in clouds)
+			currentCloud = currentCloud;
+
+		if (currentCloud = 0) {
+			annotationManager.ResetDrawState ();
+			timeSinceExecutionStarted = 0;
+		}
+
+		foreach (TypeOfAnnotation typeOfAnnotation in timeOfCreationByAnnotationType.Keys) {
+			if (timeOfCreationByAnnotationType [typeOfAnnotation] == timeSinceExecutionStarted) {
+				switch (typeOfAnnotation) {
+				case TypeOfAnnotation.HIGHLIGHTPOINTS:
+					annotationManager.DrawHighlightPointsAnnotations ();
+					break;
+
+				case TypeOfAnnotation.SCRIBBER:
+					annotationManager.DrawScribblerAnnotations ();
+					break;
+
+				case TypeOfAnnotation.TEXTTOSPEECH:
+					annotationManager.DrawTextToSpeechAnnotations ();
+					break;
+				}
+			}	
+		}
 
         handleMouseInput();
 		HandleMenuOptions ();

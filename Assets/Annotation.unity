@@ -1102,7 +1102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1341001143
 Transform:
   m_ObjectHideFlags: 0
@@ -1913,8 +1913,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53123603d61b82f4e81b8388a167e835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshDirPath: C:\Users\vimmi\Documents\Blackbox Capture\capture server\Output
-  cameraFilePath: C:\Users\vimmi\Documents\Blackbox Capture\tracker server\Tracker_Data\configSettings.txt
+  meshDirPath: C:\Users\ASUS\Desktop\Blackbox Capture\capture server\Output
+  cameraFilePath: C:\Users\ASUS\Desktop\Blackbox Capture\tracker server\Tracker_Data\configSettings.txt
   skipFirstX: 0
   currentCloud: 0
   playing: 1

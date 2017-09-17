@@ -7,11 +7,14 @@ public class TextToSpeechAnnotation {
 	public string Text { get; set; }
 	public Vector3 Position { get; set; }
 	public float Duration { get; set; }
+	public bool HasBeenDrawn { get; set; }
+	public float TimeOfCreation { get; set; }
 
 	public TextToSpeechAnnotation () {
 		Text = "";
 		Position = Vector3.zero;
 		Duration = 0.0f;
+		HasBeenDrawn = false;
 	}
 
 	public bool isTheSameAnnotation(int id){
@@ -36,4 +39,21 @@ public class TextToSpeechAnnotation {
 
 		return false;
 	}
+
+	public void Draw(){
+
+		if (!HasBeenDrawn) {
+	
+			HasBeenDrawn = true;
+		}
+	}
+
+	public void EndDraw(){
+		//TODO
+	}
+
+	public void ResetDrawState(){
+		HasBeenDrawn = false;
+	}
+
 }
