@@ -434,7 +434,7 @@ public class MenuManager : MonoBehaviour {
 		foreach(PointCloud pc in clouds)
 			currentCloud = currentCloud;
 
-		if (currentCloud = 0) {
+		if (currentCloud == 0) {
 			annotationManager.ResetDrawState ();
 			timeSinceExecutionStarted = 0;
 		}
