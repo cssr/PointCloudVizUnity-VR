@@ -25,7 +25,7 @@ public class TextToSpeech : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		IsActive = false;
-		m_DictationRecognizer = new DictationRecognizer();
+	/*	m_DictationRecognizer = new DictationRecognizer();
 
 		text3D = gameObject.AddComponent<TextMesh> ();
 
@@ -33,6 +33,7 @@ public class TextToSpeech : MonoBehaviour {
 			TrackerClientSimpleRobot tcsr = character.GetComponent<TrackerClientSimpleRobot>();
 			_rightHand = tcsr.getRightArm();
 		}
+        */
 	}
 	
 	// Update is called once per frame
@@ -71,8 +72,8 @@ public class TextToSpeech : MonoBehaviour {
 		} 
 		else 
 		{
-			m_DictationRecognizer.Stop ();
-			Debug.Log ("Dictation stoped!");
+		//	m_DictationRecognizer.Stop ();
+		//	Debug.Log ("Dictation stoped!");
 		}
 	}
 }

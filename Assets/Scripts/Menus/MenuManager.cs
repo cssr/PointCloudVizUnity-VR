@@ -32,7 +32,8 @@ public class MenuManager : MonoBehaviour {
 	private TextToSpeech textToSpeech;
 	private Scribbler scribbler;
 	private HighlightPoints highlightPoints;
-	private ChangeColor changeColor;
+	//private ChangeColor changeColor;
+    private GameObject changeColorGO;
 
     private Texture textToSpeechTextureActive;
     private Texture textToSpeechTextureInactive;
@@ -64,12 +65,20 @@ public class MenuManager : MonoBehaviour {
 	GameObject durationGO;
 	float duration;
 	bool isWheelActive;
-	enum TypeOfAnnotation {SCRIBBER, HIGHLIGHTPOINTS, TEXTTOSPEECH};
+	enum TypeOfAnnotation {SCRIBBLER, HIGHLIGHTPOINTS, TEXTTOSPEECH};
 
-	Dictionary<TypeOfAnnotation, float> timeOfCreationByAnnotationType;
+	//Dictionary<TypeOfAnnotation, float> timeOfCreationByAnnotationType;
+    Dictionary<float, Dictionary<int, TypeOfAnnotation>> timeOfCreationByAnnotationID;
 
 	int currentCloud;
 	float timeSinceExecutionStarted;
+
+    // Current Annotation
+    HighlightPointsAnnotation currentHighlightPointsAnnotation;
+    ScribblerAnnotation currentScribblerAnnotation;
+    float currentDuration;
+    private Color color;
+
 
     // Use this for initialization
     protected void Start () {
@@ -77,7 +86,7 @@ public class MenuManager : MonoBehaviour {
         textToSpeech = GetComponent<TextToSpeech>();
         scribbler = GetComponent<Scribbler>();
         highlightPoints = GetComponent<HighlightPoints>();
-        changeColor = GetComponent<ChangeColor>();
+        //changeColor = GetComponent<ChangeColor>();
         if (character != null)
 		{
 			trackerClientSimpleRobot = character.GetComponent<TrackerClientSimpleRobot>();
@@ -97,8 +106,8 @@ public class MenuManager : MonoBehaviour {
 		deleteButtonIsActive = false;
 
         //Load menu buttons textures
-        textToSpeechTextureActive = Resources.Load("textToSpeechActive") as Texture;
-        textToSpeechTextureInactive = Resources.Load("textToSpeech") as Texture;
+        textToSpeechTextureActive = Resources.Load("speechToTextActive") as Texture;
+        textToSpeechTextureInactive = Resources.Load("speechToText") as Texture;
 
         scribblerTextureActive = Resources.Load("scribblerActive") as Texture;
         scribblerTextureInactive = Resources.Load("scribbler") as Texture;
@@ -112,17 +121,25 @@ public class MenuManager : MonoBehaviour {
 		deleteTextureActive = Resources.Load ("deleteActive") as Texture;
 		deleteTextureInactive = Resources.Load ("delete") as Texture;
 
+        changeColorGO = GameObject.FindGameObjectWithTag("ColorPicker");
+        changeColorGO.SetActive(false);
+
 		duration = 0;
 
 		durationGO = GameObject.FindGameObjectWithTag ("Duration");
 		durationGO.SetActive (false);
 		isWheelActive = false;
 
-		timeOfCreationByAnnotationType = new Dictionary<TypeOfAnnotation, float> (); 
+		//timeOfCreationByAnnotationType = new Dictionary<TypeOfAnnotation, float> ();
+        timeOfCreationByAnnotationID = new Dictionary<float, Dictionary<int, TypeOfAnnotation>>();
 
         annotationManager = new AnnotationManager ();
 
 		currentCloud = 0;
+
+        currentHighlightPointsAnnotation = null;
+        currentScribblerAnnotation = null;
+        currentDuration = 0.0f;
     }
 
     // Update is called once per frame
@@ -152,11 +169,12 @@ public class MenuManager : MonoBehaviour {
 		if (isWheelActive) {
 			durationGO.SetActive (true);
 			//draw duration above right hand
-			/*durationGO.transform.position = _rightHand.transform.position;
+			durationGO.transform.position = _rightHand.transform.position;
 			Vector3 up = _rightHand.transform.up;
-			durationGO.transform.Translate (up.x * 0.1, up.y * 0.1, up.z * 0.1); */
-			
-			if (Input.GetAxisRaw ("Mouse ScrollWheel") > 0) {	
+			durationGO.transform.Translate (up.x * 0.1f, up.y * 0.1f, up.z * 0.1f);
+            durationGO.transform.localRotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
+
+            if (Input.GetAxisRaw ("Mouse ScrollWheel") > 0) {	
 				duration += Input.GetAxisRaw ("Mouse ScrollWheel");
 				durationGO.GetComponent<TextMesh> ().text = duration.ToString ();
 			}
@@ -187,7 +205,6 @@ public class MenuManager : MonoBehaviour {
 
         deltaLastClick = 0;
 
-
         Debug.Log("Scribbler button isActive = " + scribblerButtonIsActive);
         Debug.Log("Scribbler isActive = " + scribbler.IsActive);
        
@@ -200,23 +217,20 @@ public class MenuManager : MonoBehaviour {
     {
         if (scribblerButtonIsActive && !scribbler.IsActive)
         {
-            // todo change texture in 3D Menu
-            LeftMouseButtonDoubleClick();
-            scribbler.createRenderer();
+            pause();
+            scribbler.createRenderer(color);
             scribbler.IsActive = true;
             Debug.Log("Testing scribbler");
         }
 
         if (highlightPointsButtonIsActive && !highlightPoints.IsActive)
         {
-            // todo change texture in 3D Menu
-            LeftMouseButtonDoubleClick();
+            highlightPoints.init(color);
+            pause();
             highlightPoints.IsActive = true;
         
             Debug.Log("Testing highlight");
         }
-
-        Debug.Log("mouse button down");
 
     }
 
@@ -231,14 +245,20 @@ public class MenuManager : MonoBehaviour {
         if (scribblerButtonIsActive && deltaHoldTime > doubleClickTimeLimit) {
 			scribbler.IsActive = false;
             scribbler.assignClosestBone(trackerClientRecorded.Humans);
-			annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO, Time.time);
-			timeOfCreationByAnnotationType.Add (TypeOfAnnotation.SCRIBBER, Time.time);
+			ScribblerAnnotation sbAnnotation = annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO, Time.time,scribbler.center);
+            //timeOfCreationByAnnotationType.Add (TypeOfAnnotation.SCRIBBER, Time.time);
+            Dictionary<int, TypeOfAnnotation> temp = new Dictionary<int, TypeOfAnnotation>();
+            temp.Add(sbAnnotation.ID, TypeOfAnnotation.SCRIBBLER);
+            timeOfCreationByAnnotationID.Add(Time.time, temp);
 		}
 
 		if (highlightPointsButtonIsActive && deltaHoldTime > doubleClickTimeLimit) { 
 			highlightPoints.IsActive = false;
-			annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms, Time.time);
-			timeOfCreationByAnnotationType.Add (TypeOfAnnotation.HIGHLIGHTPOINTS, Time.time);
+			HighlightPointsAnnotation hpAnnotation = annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms, Time.time);
+            //timeOfCreationByAnnotationType.Add (TypeOfAnnotation.HIGHLIGHTPOINTS, Time.time);
+            Dictionary<int, TypeOfAnnotation> temp = new Dictionary<int, TypeOfAnnotation>();
+            temp.Add(hpAnnotation.ID, TypeOfAnnotation.HIGHLIGHTPOINTS);
+            timeOfCreationByAnnotationID.Add(Time.time, temp);
         }
         deltaHoldTime = 0;
 
@@ -246,9 +266,7 @@ public class MenuManager : MonoBehaviour {
 
     private void RightMouseClickEvent()
     {
-       
-
-     
+            
         RightMouseButtonSingleClick();
     }
 
@@ -267,8 +285,42 @@ public class MenuManager : MonoBehaviour {
     {
         menu.SetActive( false);
         Debug.Log("Left Mouse Button Single Click");
+
+        if (changeColorButtonIsActive) {
+            if (changeColorGO.activeSelf)
+            {
+                changeColorButtonIsActive = false;
+                changeColorGO.SetActive(false);
+
+            }
+            else
+            {
+                changeColorGO.SetActive(true);
+
+                Transform headPosition = trackerClientSimpleRobot.getHead();
+                Vector3 frontVector = Camera.main.transform.forward;
+                changeColorGO.transform.position = Vector3.zero;
+                changeColorGO.transform.rotation = Quaternion.identity;
+
+                changeColorGO.transform.localPosition = headPosition.position;
+                changeColorGO.transform.Translate(0.7f * frontVector.x, 0.70f * frontVector.y, 0.70f * frontVector.z);
+                changeColorGO.transform.localRotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
+
+
+               
+            }
+        }
     }
 
+    private void pause()
+    {
+        fileListener.playing = false;
+
+        foreach (PointCloud pc in clouds)
+        {
+            pc.playing = false;
+        }
+    }
     
     private void LeftMouseButtonDoubleClick()
     {
@@ -299,7 +351,7 @@ public class MenuManager : MonoBehaviour {
             menu.transform.rotation = Quaternion.identity;
 
             menu.transform.position = headPosition.position;
-			menu.transform.Translate(1.0f * frontVector.x, 1.0f * frontVector.y, 1.0f * frontVector.z);
+			menu.transform.Translate(0.7f * frontVector.x, 0.70f * frontVector.y, 0.70f * frontVector.z);
             menu.transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
          //   menu.transform.up = Camera.main.transform.up;
 
@@ -347,70 +399,59 @@ public class MenuManager : MonoBehaviour {
 
 			if (Physics.Raycast (_rightHand.transform.position, forward, out hit)) {
 				print ("Found an object - name: " + hit.collider.name);
-
-
+                
 				// SPEECH TO TEXT
 				if (hit.collider.name.Equals ("TextToSpeech")) {
 					textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureActive);
-					if (textToSpeechButtonIsActive) {
-						textToSpeechButtonIsActive = false;
-					} else {
-						textToSpeechButtonIsActive = true;
-					}
+					textToSpeechButtonIsActive = true;
+					
 				} else
 				{
 					textToSpeechButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", textToSpeechTextureInactive);
-				}
+                    textToSpeechButtonIsActive = false;
 
-				// HIGHLIGHT POINTS
-				if (hit.collider.name.Equals("HighlightPoints")){
+                }
+
+                // HIGHLIGHT POINTS
+                if (hit.collider.name.Equals("HighlightPoints")){
 					highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureActive);
-					if (highlightPointsButtonIsActive) {
-						highlightPointsButtonIsActive = false;
-					} 
-					else 
-					{
-						highlightPointsButtonIsActive = true;
-					}
+					highlightPointsButtonIsActive = true;
 				}
 				else
 				{
 					highlightPointsButton.GetComponent<Renderer>().material.SetTexture("_MainTex", highlightPointsTextureInactive);
-				}
+                    highlightPointsButtonIsActive = false;
 
-				// SCRIBBLER
-				if (hit.collider.name.Equals("Scribbler")){
+                }
+
+                // SCRIBBLER
+                if (hit.collider.name.Equals("Scribbler")){
 					scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex",scribblerTextureActive);
-					if (scribblerButtonIsActive) {
-						scribblerButtonIsActive = false;
-					} 
-					else 
-					{
-						scribblerButtonIsActive = true;
-					}
+                    scribblerButtonIsActive = true;
 				}
 				else
 				{
 					scribblerButton.GetComponent<Renderer>().material.SetTexture("_MainTex", scribblerTextureInactive);
-				}
+                    scribblerButtonIsActive = false;
 
-				// CHANGE COLOR
-				if (hit.collider.name.Equals ("ChangeColor")) {
-					changeColorButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", changeColorTextureActive);
-					if (changeColorButtonIsActive) {
-						changeColorButtonIsActive = false;
-					} else 
-					{
-						changeColorButtonIsActive = true;
-					}
-				} 
-				else
-				{
-					changeColorButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", changeColorTextureInactive);
-				}
+                }
 
-				// DELETE
-				if (hit.collider.name.Equals ("Delete")) {
+                // CHANGE COLOR
+                if (hit.collider.name.Equals("ChangeColor"))
+                {
+                    changeColorButton.GetComponent<Renderer>().material.SetTexture("_MainTex", changeColorTextureActive);
+                    changeColorButtonIsActive = true;
+
+                }
+                else
+                {
+                    changeColorButton.GetComponent<Renderer>().material.SetTexture("_MainTex", changeColorTextureInactive);
+                    changeColorButtonIsActive = false;
+
+                }
+
+                // DELETE
+                if (hit.collider.name.Equals ("Delete")) {
 					deleteButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", deleteTextureActive);
 					if (deleteButtonIsActive) {
 						deleteButtonIsActive = false;
@@ -424,46 +465,142 @@ public class MenuManager : MonoBehaviour {
 				}
 			}
 		}
-	}
+        if (changeColorButtonIsActive)
+        {
+            // draw raycast vector to interact with the 3D Menu
+            //Vector3 forward = transform.TransformDirection (Vector3.forward) * 10;
+
+            //    Vector3 handpos = _rightHand.transform.position;
+            //    Bounds bounds = changeColorGO.GetComponent<Renderer>().bounds;
+            //    //Vector3 changeColorGOCenter = new Vector3(bounds.size.x / 2, bounds.size.y / 2, bounds.size.z / 2); //c.center;
+            //    Vector3 relPosition = (handpos - changeColorGO.transform.position);
+
+
+            ////    Debug.Log("distance of hand position to change color center: " + relPosition.ToString());
+            //    relPosition += changeColorGOCenter;
+            //  //  Debug.Log("hand position relative change color center: " + relPosition.ToString());
+
+            //    Texture2D mainTex = changeColorGO.GetComponent<Renderer>().material.mainTexture as Texture2D;
+            //    Color color = mainTex.GetPixel(Math.Abs((int)relPosition.x), Math.Abs((int)relPosition.z));
+            //    Debug.Log("the color picked = " + color.ToString());
+
+            Vector3 forward = Camera.main.transform.forward;
+            Debug.DrawRay(_rightHand.transform.position, forward, Color.green, 1, false);
+
+            if (Physics.Raycast(_rightHand.transform.position, forward, out hit))
+            {
+                print("Found an object - name: " + hit.collider.name);
+
+                // SPEECH TO TEXT
+                if (hit.collider.name.Equals("ColorPicker"))
+                {
+                    Texture2D mainTex = changeColorGO.GetComponent<Renderer>().material.mainTexture as Texture2D;
+                    Vector2 pixelUV = hit.textureCoord;
+                    Debug.Log("PIXUV " + pixelUV);
+                    pixelUV.x *= mainTex.width;
+                    pixelUV.y *= mainTex.height;
+
+                    Debug.Log("hit position = " + hit.transform.position.ToString());
+
+                    color = mainTex.GetPixel((int)pixelUV.x, (int)pixelUV.y);
+                    Debug.Log("the color picked = " + color.ToString());
+                }
+            }
+        }
+    }
 
     // Update is called once per frame
     void Update () {
 
-		timeSinceExecutionStarted += Time.time;
+//		timeSinceExecutionStarted += Time.deltaTime;
 
-		foreach(PointCloud pc in clouds)
-			currentCloud = currentCloud;
+//		foreach(PointCloud pc in clouds)
+//			currentCloud = pc.currentCloud;
 
-		if (currentCloud == 0) {
-			annotationManager.ResetDrawState ();
-			timeSinceExecutionStarted = 0;
-		}
+//		if (currentCloud == 0) {
+//			annotationManager.ResetDrawState ();
+//			timeSinceExecutionStarted = 0;
+//		}
 
-		foreach (TypeOfAnnotation typeOfAnnotation in timeOfCreationByAnnotationType.Keys) {
-			if (timeOfCreationByAnnotationType [typeOfAnnotation] == timeSinceExecutionStarted) {
-				switch (typeOfAnnotation) {
-				case TypeOfAnnotation.HIGHLIGHTPOINTS:
-					annotationManager.DrawHighlightPointsAnnotations ();
-					break;
+//        // Draw annotations according to creation time
+//        if(timeOfCreationByAnnotationID.ContainsKey(timeSinceExecutionStarted))
+//        {
+//            Dictionary<int, TypeOfAnnotation> temp = timeOfCreationByAnnotationID[timeSinceExecutionStarted];
+//            foreach (int id in temp.Keys)
+//            {
+//                switch (temp[id])
+//                {
+//                    case TypeOfAnnotation.HIGHLIGHTPOINTS:
+//                        currentHighlightPointsAnnotation = annotationManager.GetHighlightPointsAnnotationByID(id);
+//                        currentHighlightPointsAnnotation.Draw();
+//                        currentDuration = currentHighlightPointsAnnotation.Duration;
+//                       // annotationManager.DrawHighlightPointsAnnotations();
+//                        break;
 
-				case TypeOfAnnotation.SCRIBBER:
-					annotationManager.DrawScribblerAnnotations ();
-					break;
+//                    case TypeOfAnnotation.SCRIBBLER:
+//                        currentScribblerAnnotation = annotationManager.GetScribblerAnnotationByID(id);
+//                        currentScribblerAnnotation.Draw();
+//                        currentDuration = currentScribblerAnnotation.Duration;
+//                        //annotationManager.DrawScribblerAnnotations();
+//                        break;
 
-				case TypeOfAnnotation.TEXTTOSPEECH:
-					annotationManager.DrawTextToSpeechAnnotations ();
-					break;
-				}
-			}	
-		}
+//                    case TypeOfAnnotation.TEXTTOSPEECH:
+//                        annotationManager.DrawTextToSpeechAnnotations();
+//                        break;
+//                }
+//            }
+//        }
+
+//        // Disable annotations according to duration
+//        if (Time.time - timeSinceExecutionStarted == currentDuration)
+//        {
+//            if(currentHighlightPointsAnnotation != null)
+//            {
+//                //?
+//                currentHighlightPointsAnnotation = null;
+//            }
+
+//            if(currentScribblerAnnotation != null)
+//            {
+//                currentScribblerAnnotation.LineRendererGO.SetActive(false);
+//                currentScribblerAnnotation = null;
+//            }
+//            currentDuration = 0.0f;
+//        }
+
+
+///*
+//		foreach (TypeOfAnnotation typeOfAnnotation in timeOfCreationByAnnotationType.Keys) {
+//			if (timeOfCreationByAnnotationType [typeOfAnnotation] == timeSinceExecutionStarted) {
+//				switch (typeOfAnnotation) {
+//				case TypeOfAnnotation.HIGHLIGHTPOINTS:
+//					annotationManager.DrawHighlightPointsAnnotations ();
+//					break;
+
+//				case TypeOfAnnotation.SCRIBBER:
+//					annotationManager.DrawScribblerAnnotations ();
+//					break;
+
+//				case TypeOfAnnotation.TEXTTOSPEECH:
+//					annotationManager.DrawTextToSpeechAnnotations ();
+//					break;
+//				}
+//			}	
+//		}
+//*/
+
 
         handleMouseInput();
 		HandleMenuOptions ();
 
-		//DEBUG
-		if (menu.activeSelf) {
-			//changeColorButton.GetComponent<Renderer> ().material.SetTexture ("_MainTex", changeColorTextureActive);
-		}
+        //debug
+       // Debug.Log("number of scribbler annotations: " + annotationManager.ScribblerAnnotationList.Count);
+     //   foreach (ScribblerAnnotation sbAnnotation in annotationManager.ScribblerAnnotationList)
+      //  {
+     //      Debug.Log("scribbler duration: " + sbAnnotation.Duration.ToString());
+      //  }
+        
+      //  Debug.Log("number of highlight points annotations: " + annotationManager.HighlightPointsAnnotationList.Count); 
 
 	}
 }

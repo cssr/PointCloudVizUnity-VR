@@ -5,9 +5,9 @@ using UnityEngine;
 public class AnnotationManager {
 
 
-	List<ScribblerAnnotation> ScribblerAnnotationList { get; set;}
-	List<TextToSpeechAnnotation> TextToSpeechAnnotationList { get; set;}
-	List<HighlightPointsAnnotation> HighlightPointsAnnotationList { get; set;}
+	public List<ScribblerAnnotation> ScribblerAnnotationList { get; set;}
+	public List<TextToSpeechAnnotation> TextToSpeechAnnotationList { get; set;}
+	public List<HighlightPointsAnnotation> HighlightPointsAnnotationList { get; set;}
 
 	// Use this for initialization
 	public AnnotationManager() {
@@ -17,12 +17,14 @@ public class AnnotationManager {
 	}
 
 
-	public void AddScribblerAnnotation(GameObject lineRendererGO, float timeOfCreation) {
+	public ScribblerAnnotation AddScribblerAnnotation(GameObject lineRendererGO, float timeOfCreation, Vector3 center) {
 		ScribblerAnnotation sbAnnotation = new ScribblerAnnotation();
 		sbAnnotation.ID = ScribblerAnnotationList.Count + 1;
 		sbAnnotation.LineRendererGO = lineRendererGO;
 		sbAnnotation.TimeOfCreation = timeOfCreation;
+        sbAnnotation.center = center;
 		ScribblerAnnotationList.Add (sbAnnotation);
+        return sbAnnotation;
 	}
 
 	public void DeleteScribblerAnnotation(ScribblerAnnotation sbAnnotation){
@@ -69,16 +71,18 @@ public class AnnotationManager {
 		Debug.Log ("ERROR: Unable to find the TextToSpeechAnnotation - " + ttsAnnotation.Text);
 	}
 
-	public void AddHighlightPointsAnnotation(List<Transform> bones, float timeOfCreation){
+	public HighlightPointsAnnotation AddHighlightPointsAnnotation(List<Transform> bones, float timeOfCreation){
         HighlightPointsAnnotation hpAnnotation = new HighlightPointsAnnotation();
+        hpAnnotation.ID = HighlightPointsAnnotationList.Count + 1;
         hpAnnotation.Bones = bones;
 		hpAnnotation.TimeOfCreation = timeOfCreation;
         HighlightPointsAnnotationList.Add (hpAnnotation);
+        return hpAnnotation;
 	}
 
 	public void SetAnnotationDuration(float duration, Vector3 position){
 	
-		float minDist = 0.2f;
+		float minDist = 0.5f;
 		foreach(ScribblerAnnotation sa in ScribblerAnnotationList) { 
 			if (sa.IsAnnotationCloseToPosition (position, minDist)) {
 				sa.Duration = duration;
@@ -144,4 +148,24 @@ public class AnnotationManager {
 				ha.ResetDrawState ();	
 		}
 	}
+
+    public ScribblerAnnotation GetScribblerAnnotationByID(int ID)
+    {
+        foreach(ScribblerAnnotation sbAnnotation in ScribblerAnnotationList)
+        {
+            if (sbAnnotation.ID == ID)
+                return sbAnnotation;
+        }
+        return null;
+    }
+
+    public HighlightPointsAnnotation GetHighlightPointsAnnotationByID(int ID)
+    {
+        foreach(HighlightPointsAnnotation hpAnnotation in HighlightPointsAnnotationList)
+        {
+            if (hpAnnotation.ID == ID)
+                return hpAnnotation;
+        }
+            return null;
+    }
 }

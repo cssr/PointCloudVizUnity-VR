@@ -48,6 +48,7 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 			}
 
 			if (bonePositionsf.Count != 0) {
+
 				mat.SetFloatArray ("_BonesPositions", bonePositionsf);
 				mat.SetInt ("_BonesPositionsLenght", bonePositionsf.Count);
 			}

@@ -6,6 +6,7 @@ public class ScribblerAnnotation {
 
 	public int ID { get; set; }
 	public GameObject LineRendererGO { get; set; }
+    public Vector3 center;
 	public float Duration { get; set; }
 	public bool HasBeenDrawn{ get; set; }
 	public float TimeOfCreation { get; set; }
@@ -30,7 +31,7 @@ public class ScribblerAnnotation {
 	}
 
 	public bool IsAnnotationCloseToPosition(Vector3 position, float minDist){
-		if ((LineRendererGO.transform.position - position).magnitude < minDist)
+		if ((center - position).magnitude < minDist)
 			return true;
 		
 		return false;

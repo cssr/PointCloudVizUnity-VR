@@ -60,7 +60,7 @@ Shader "Custom/Simple Billboard"
 				float4 _Color;
 				float _ColorizeDistance;
 				int _BonesPositionsLenght = 0;
-				float _BonesPositions[87];
+				float _BonesPositions[500];
 				 
 
 				// **************************************************************
@@ -78,13 +78,13 @@ Shader "Custom/Simple Billboard"
 					bool origColor = true;
 					if(_BonesPositionsLenght != 0)
 					{
-						int i = 0;
+						int i = 3;
 
 						float3 worldPos = mul(unity_ObjectToWorld,v.vertex).xyz;
 							
 						while(i < _BonesPositionsLenght){
 							float3 bonepos= float3(_BonesPositions[i],_BonesPositions[i+1],_BonesPositions[i+2]); // bones pos x,y,z
-							i+=3;
+							i= i+ 3;
 							if(length (worldPos- bonepos) < _ColorizeDistance){
 								origColor = false;
 								break;

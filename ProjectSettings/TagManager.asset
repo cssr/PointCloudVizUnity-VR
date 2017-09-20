@@ -11,6 +11,7 @@ TagManager:
   - Delete
   - ChangeColor
   - Duration
+  - ColorPicker
   layers:
   - Default
   - TransparentFX

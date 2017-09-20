@@ -166,7 +166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9fba40f96df24f7a96355c615ba8e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  port: 5002
+  port: 58116
 --- !u!4 &261751543
 Transform:
   m_ObjectHideFlags: 0
@@ -268,7 +268,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 489658488}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.15208793, y: 0.997, z: -1.065}
+  m_LocalPosition: {x: -0.256, y: 0.255, z: -0}
   m_LocalScale: {x: 0.049999997, y: 1.0000005, z: 0.050000027}
   m_Children: []
   m_Father: {fileID: 305474765}
@@ -406,20 +406,6 @@ Light:
   m_Lightmapping: 1
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_FalloffTable:
-    m_Table[0]: 0
-    m_Table[1]: 0
-    m_Table[2]: 0
-    m_Table[3]: 0
-    m_Table[4]: 0
-    m_Table[5]: 0
-    m_Table[6]: 0
-    m_Table[7]: 0
-    m_Table[8]: 0
-    m_Table[9]: 0
-    m_Table[10]: 0
-    m_Table[11]: 0
-    m_Table[12]: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
@@ -589,6 +575,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 261751539}
+  center: {x: 0, y: 0, z: 0}
 --- !u!4 &756664227
 Transform:
   m_ObjectHideFlags: 0
@@ -596,7 +583,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 756664225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.585413, y: -2.105697, z: -3.472173}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -641,6 +628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bonesTransforms: []
   character: {fileID: 261751539}
+  pointCloudSkeleton: {fileID: 1016402955}
 --- !u!114 &756664231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,6 +640,90 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 647a70b9f88d11042ac8cc047090357a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &765826227
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 765826231}
+  - component: {fileID: 765826230}
+  - component: {fileID: 765826229}
+  - component: {fileID: 765826228}
+  m_Layer: 0
+  m_Name: ColorPicker
+  m_TagString: ColorPicker
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &765826228
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 765826227}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 2100000, guid: 510dc952cf3918d4d8b4dee57a224403, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!64 &765826229
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 765826227}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 0
+  m_InflateMesh: 0
+  m_SkinWidth: 0.01
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!33 &765826230
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 765826227}
+  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &765826231
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 765826227}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &792657789
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,7 +749,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 792657789}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.403, y: 0.761, z: -1.065}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.025, y: 1.0000005, z: 0.025000002}
   m_Children: []
   m_Father: {fileID: 305474765}
@@ -827,7 +899,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df4f0d1aa4ca31a44ab03b3eb216acaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileLocation: C:\Users\ASUS\Desktop\Blackbox Capture\skeleton recorder\15023825687883502.txt
+  fileLocation: C:\Users\Vimmi\Documents\Blackbox Capture\skeleton recorder\15046261188196583.txt
   playing: 0
 --- !u!4 &1016402958
 Transform:
@@ -958,7 +1030,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1246508949}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.651, y: 0.99, z: -1.065}
+  m_LocalPosition: {x: 0.242, y: 0.25, z: 0}
   m_LocalScale: {x: 0.049999997, y: 1.0000005, z: 0.050000027}
   m_Children: []
   m_Father: {fileID: 305474765}
@@ -1102,7 +1174,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1341001143
 Transform:
   m_ObjectHideFlags: 0
@@ -1142,7 +1214,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1414221283}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.651, y: 0.49499997, z: -1.065}
+  m_LocalPosition: {x: 0.2409, y: -0.2501, z: 0}
   m_LocalScale: {x: 0.049999997, y: 1.0000005, z: 0.050000027}
   m_Children: []
   m_Father: {fileID: 305474765}
@@ -1226,7 +1298,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1555632624}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.15208793, y: 0.495, z: -1.065}
+  m_LocalPosition: {x: -0.2549, y: -0.245, z: 0}
   m_LocalScale: {x: 0.05, y: 1, z: 0.05000003}
   m_Children: []
   m_Father: {fileID: 305474765}
@@ -1820,14 +1892,14 @@ TextMesh:
   m_LineSpacing: 1
   m_Anchor: 4
   m_Alignment: 1
-  m_TabSize: 9
-  m_FontSize: 0
+  m_TabSize: 0
+  m_FontSize: 8
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   m_Color:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4279370495
 --- !u!23 &2016401934
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1913,8 +1985,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53123603d61b82f4e81b8388a167e835, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshDirPath: C:\Users\ASUS\Desktop\Blackbox Capture\capture server\Output
-  cameraFilePath: C:\Users\ASUS\Desktop\Blackbox Capture\tracker server\Tracker_Data\configSettings.txt
+  meshDirPath: C:\Users\Vimmi\Documents\Blackbox Capture\capture server\Output
+  cameraFilePath: C:\Users\Vimmi\Documents\Blackbox Capture\tracker server\Tracker_Data\configSettings.txt
   skipFirstX: 0
   currentCloud: 0
   playing: 1

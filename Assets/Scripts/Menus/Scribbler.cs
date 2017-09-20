@@ -13,7 +13,7 @@ public class Scribbler : MonoBehaviour {
     private List<Vector3> _myPoints;
     public GameObject character;
 	private GameObject pointCloudSkeleton { get; set; }
-
+    public Vector3 center;
     private TrackerClientRecorded trackerClientRecorded;
 
 
@@ -39,7 +39,7 @@ public class Scribbler : MonoBehaviour {
         _myPoints = new List<Vector3>();
     }
 
-    public void createRenderer()
+    public void createRenderer(Color c)
     {
         lineRendererGO = new GameObject("lineRenderer " + _currentRenderer);
         lineRendererGO.transform.parent = gameObject.transform;
@@ -48,14 +48,13 @@ public class Scribbler : MonoBehaviour {
 		lineRenderer.material = Resources.Load("ParticleAfterburner") as Material;
         lineRenderer.widthMultiplier = 0.05f;
         // A simple 2 color gradient with a fixed alpha of 1.0f.
-        float alpha = 1.0f;
-        Color c1 = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
-        Color c2 = new Color(c1.r / 2.0f, c1.g / 2.0f, c1.b /2.0f);
-        lineRenderer.startColor =c1;
+       // Color c1 = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
+        Color c2 = new Color(c.r / 2.0f, c.g / 2.0f, c.b /2.0f);
+        lineRenderer.startColor =c;
         lineRenderer.endColor = c2;
         lineRenderer.useWorldSpace = false;
         lineRenderer.positionCount = 0;
-        
+        _currentRenderer++;
     }
 
     public void assignClosestBone(Dictionary<string,Human> humans)
@@ -63,12 +62,18 @@ public class Scribbler : MonoBehaviour {
         float minDist = float.MaxValue;
         float maxDist = 1f;
         Transform minTransf = null;
+        center = Vector3.zero;
+        foreach (Vector3 v in _myPoints)
+        {
+            center += v;
+        }
+        center = new Vector3(center.x / _myPoints.Count, center.y / _myPoints.Count, center.z / _myPoints.Count);
         foreach (Human h in humans.Values)
         {
             List<Transform> transfs = h.tbr.bodyTransforms;
             foreach (Transform t in transfs)
             {
-                float dist = (lineRendererGO.transform.localPosition - t.position).magnitude;
+                float dist = (center - t.position).magnitude;
                 if (dist < minDist && dist < maxDist)
                 {
                     minDist = dist;
