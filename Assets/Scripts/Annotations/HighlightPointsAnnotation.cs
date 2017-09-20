@@ -10,6 +10,9 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 	Material mat;
 	public bool HasBeenDrawn { get; set; }
 	public float TimeOfCreation { get; set; }
+    private int _mpPos;
+    private float[] _myPoints;
+    public Color highlightColor { get; set; }
 
 	public HighlightPointsAnnotation () {
 		ID = 0;
@@ -17,7 +20,18 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 		Duration = 0.0f;
 		mat = Resources.Load ("cloudmat") as Material;
 		HasBeenDrawn = false;
+
+        _myPoints = new float[500];
 	}
+
+    void resetMyPoints()
+    {
+        for (int i = 0; i < _myPoints.Length; i++)
+        {
+            _myPoints[i] = 0;
+        }
+        _mpPos = 0;
+    }
 
 	public bool isTheSameAnnotation(int id){
 		return (ID == id);
@@ -40,17 +54,15 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 
 		if (!HasBeenDrawn) {
 			List<float> bonePositionsf = new List<float> ();
-			foreach (Transform t in Bones) {
-				Vector3 position = t.position;
-				bonePositionsf.Add (position.x);
-				bonePositionsf.Add (position.y);
-				bonePositionsf.Add (position.z);
-			}
+			foreach (Transform bone in Bones) {
 
-			if (bonePositionsf.Count != 0) {
+                _myPoints[_mpPos++] = (bone.transform.position.x);
+                _myPoints[_mpPos++] = (bone.transform.position.y);
+                _myPoints[_mpPos++] = (bone.transform.position.z);
 
-				mat.SetFloatArray ("_BonesPositions", bonePositionsf);
-				mat.SetInt ("_BonesPositionsLenght", bonePositionsf.Count);
+                mat.SetFloatArray("_BonesPositions", _myPoints);
+                mat.SetInt("_BonesPositionsLenght", _mpPos);
+                mat.SetColor("_Color", highlightColor);	
 			}
 			HasBeenDrawn = true;
 		}
@@ -58,7 +70,11 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 
 	public void EndDraw(){
 
-		//?
+        resetMyPoints();
+        mat.SetFloatArray("_BonesPositions", _myPoints);
+        mat.SetInt("_BonesPositionsLenght", _mpPos);
+        mat.SetColor("_Color", highlightColor);	
+
 	}
 
 	public void ResetDrawState(){

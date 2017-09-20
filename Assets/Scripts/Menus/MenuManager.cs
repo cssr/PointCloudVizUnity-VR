@@ -255,6 +255,7 @@ public class MenuManager : MonoBehaviour {
 		if (highlightPointsButtonIsActive && deltaHoldTime > doubleClickTimeLimit) { 
 			highlightPoints.IsActive = false;
 			HighlightPointsAnnotation hpAnnotation = annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms, Time.time);
+            hpAnnotation.highlightColor = color;
             //timeOfCreationByAnnotationType.Add (TypeOfAnnotation.HIGHLIGHTPOINTS, Time.time);
             Dictionary<int, TypeOfAnnotation> temp = new Dictionary<int, TypeOfAnnotation>();
             temp.Add(hpAnnotation.ID, TypeOfAnnotation.HIGHLIGHTPOINTS);

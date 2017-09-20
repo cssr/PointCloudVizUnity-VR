@@ -16,7 +16,6 @@ public class Scribbler : MonoBehaviour {
     public Vector3 center;
     private TrackerClientRecorded trackerClientRecorded;
 
-
     // Use this for initialization
     void Start () {
         //_handheldListener = new UDPHandheldListener(1998, "negativespace");
@@ -49,8 +48,8 @@ public class Scribbler : MonoBehaviour {
         lineRenderer.widthMultiplier = 0.05f;
         // A simple 2 color gradient with a fixed alpha of 1.0f.
        // Color c1 = new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f));
-        Color c2 = new Color(c.r / 2.0f, c.g / 2.0f, c.b /2.0f);
-        lineRenderer.startColor =c;
+        Color c2 = new Color(c.r / 2.0f, c.g / 2.0f, c.b / 2.0f);
+        lineRenderer.startColor = c;
         lineRenderer.endColor = c2;
         lineRenderer.useWorldSpace = false;
         lineRenderer.positionCount = 0;

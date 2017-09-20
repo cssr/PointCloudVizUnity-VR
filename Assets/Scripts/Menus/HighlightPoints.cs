@@ -14,7 +14,7 @@ public class HighlightPoints : MonoBehaviour {
     public GameObject pointCloudSkeleton;
     private float[] _myPoints;
     private int _mpPos;
-    private Color highlightColor;
+    public Color highlightColor;
     Transform Bone { get; set; }
     private TrackerClientRecorded trackerClientRecorded;
 
@@ -26,6 +26,7 @@ public class HighlightPoints : MonoBehaviour {
         }
         _mpPos = 0;
     }
+
     // Use this for initialization
     void Start () {
 		IsActive = false;

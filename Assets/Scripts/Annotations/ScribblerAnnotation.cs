@@ -10,6 +10,7 @@ public class ScribblerAnnotation {
 	public float Duration { get; set; }
 	public bool HasBeenDrawn{ get; set; }
 	public float TimeOfCreation { get; set; }
+    public Color scribblerColor { get; set; }
 
     public ScribblerAnnotation() {
         ID = 0;
