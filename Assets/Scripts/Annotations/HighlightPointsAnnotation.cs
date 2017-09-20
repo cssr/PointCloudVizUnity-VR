@@ -20,6 +20,7 @@ public class HighlightPointsAnnotation : MonoBehaviour {
 		Duration = 0.0f;
 		mat = Resources.Load ("cloudmat") as Material;
 		HasBeenDrawn = false;
+        TimeOfCreation = 0.0f;
 
         _myPoints = new float[500];
 	}

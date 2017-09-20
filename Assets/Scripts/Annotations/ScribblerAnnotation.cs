@@ -17,6 +17,7 @@ public class ScribblerAnnotation {
 		LineRendererGO = null;
 		Duration = 0.0f;
 		HasBeenDrawn = false;
+        TimeOfCreation = 0.0f;
     }
 
 	public bool isTheSameAnnotation(int id){

@@ -48,7 +48,7 @@ public class PointCloud : MonoBehaviour {
 		
 		setCloudToRender (first,true);
 		//setInitialPositionIni ();
-		CalibrateLopesGraç();
+		CalibrateLopesGraça();
 		
 	}
 	
@@ -85,7 +85,7 @@ public class PointCloud : MonoBehaviour {
 		
 	}
 
-	private void CalibrateLopesGraç(){
+	private void CalibrateLopesGraça(){
 
 		FileStream fs = new FileStream (cameraFilePath, FileMode.Open);
 		StreamReader sr = new StreamReader (fs);
@@ -109,11 +109,6 @@ public class PointCloud : MonoBehaviour {
 			}
 		}
 	}
-
-
-
-	
-	
 	
 	private void setCloudToRender(List<Mesh> meshes, bool show){
 		Renderer[] r = gameObject.GetComponents<Renderer> ();

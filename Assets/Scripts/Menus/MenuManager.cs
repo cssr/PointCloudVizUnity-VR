@@ -52,6 +52,8 @@ public class MenuManager : MonoBehaviour {
 
     private AnnotationManager annotationManager;
 
+    private Color color;
+
 	TrackerClientSimpleRobot trackerClientSimpleRobot;
     TrackerClientRecorded trackerClientRecorded;
     FileListener fileListener;
@@ -67,18 +69,8 @@ public class MenuManager : MonoBehaviour {
 	bool isWheelActive;
 	enum TypeOfAnnotation {SCRIBBLER, HIGHLIGHTPOINTS, TEXTTOSPEECH};
 
-	//Dictionary<TypeOfAnnotation, float> timeOfCreationByAnnotationType;
-    Dictionary<float, Dictionary<int, TypeOfAnnotation>> timeOfCreationByAnnotationID;
-
-	int currentCloud;
-	float timeSinceExecutionStarted;
-
-    // Current Annotation
-    HighlightPointsAnnotation currentHighlightPointsAnnotation;
-    ScribblerAnnotation currentScribblerAnnotation;
-    float currentDuration;
-    private Color color;
-
+    float currentExecutionTime;
+    int currentCloud;
 
     // Use this for initialization
     protected void Start () {
@@ -130,16 +122,8 @@ public class MenuManager : MonoBehaviour {
 		durationGO.SetActive (false);
 		isWheelActive = false;
 
-		//timeOfCreationByAnnotationType = new Dictionary<TypeOfAnnotation, float> ();
-        timeOfCreationByAnnotationID = new Dictionary<float, Dictionary<int, TypeOfAnnotation>>();
-
-        annotationManager = new AnnotationManager ();
-
-		currentCloud = 0;
-
-        currentHighlightPointsAnnotation = null;
-        currentScribblerAnnotation = null;
-        currentDuration = 0.0f;
+        currentExecutionTime = 0.0f;
+        currentCloud = 0;
     }
 
     // Update is called once per frame
@@ -246,20 +230,14 @@ public class MenuManager : MonoBehaviour {
 			scribbler.IsActive = false;
             scribbler.assignClosestBone(trackerClientRecorded.Humans);
 			ScribblerAnnotation sbAnnotation = annotationManager.AddScribblerAnnotation (scribbler.lineRendererGO, Time.time,scribbler.center);
-            //timeOfCreationByAnnotationType.Add (TypeOfAnnotation.SCRIBBER, Time.time);
-            Dictionary<int, TypeOfAnnotation> temp = new Dictionary<int, TypeOfAnnotation>();
-            temp.Add(sbAnnotation.ID, TypeOfAnnotation.SCRIBBLER);
-            timeOfCreationByAnnotationID.Add(Time.time, temp);
-		}
+            sbAnnotation.TimeOfCreation = currentExecutionTime;
+        }
 
 		if (highlightPointsButtonIsActive && deltaHoldTime > doubleClickTimeLimit) { 
 			highlightPoints.IsActive = false;
 			HighlightPointsAnnotation hpAnnotation = annotationManager.AddHighlightPointsAnnotation(highlightPoints.bonesTransforms, Time.time);
             hpAnnotation.highlightColor = color;
-            //timeOfCreationByAnnotationType.Add (TypeOfAnnotation.HIGHLIGHTPOINTS, Time.time);
-            Dictionary<int, TypeOfAnnotation> temp = new Dictionary<int, TypeOfAnnotation>();
-            temp.Add(hpAnnotation.ID, TypeOfAnnotation.HIGHLIGHTPOINTS);
-            timeOfCreationByAnnotationID.Add(Time.time, temp);
+            hpAnnotation.TimeOfCreation = currentExecutionTime;
         }
         deltaHoldTime = 0;
 
@@ -307,8 +285,6 @@ public class MenuManager : MonoBehaviour {
                 changeColorGO.transform.Translate(0.7f * frontVector.x, 0.70f * frontVector.y, 0.70f * frontVector.z);
                 changeColorGO.transform.localRotation = Quaternion.LookRotation(Camera.main.transform.forward, Camera.main.transform.up);
 
-
-               
             }
         }
     }
@@ -510,89 +486,55 @@ public class MenuManager : MonoBehaviour {
         }
     }
 
+    // Set o Mathf.Approximately doesnt work, use this
+    static bool RoughlyEqual(float a, float b)
+    {
+        float treshold = 2f; //how much roughly
+        return (Math.Abs(a - b) < treshold);
+    }
+
+    public void HandleAnnotationPlayback()
+    {
+        // Reset execution time
+        foreach (PointCloud pc in clouds)
+            currentCloud = pc.currentCloud;
+
+        if (currentCloud == 0)
+        {
+            annotationManager.ResetDrawState();
+            currentExecutionTime = 0.0f;
+        }
+
+        // handle playback of annotations
+        List<ScribblerAnnotation> scribblerAnnotationList = annotationManager.ScribblerAnnotationList;
+        foreach (ScribblerAnnotation sbAnnotation in scribblerAnnotationList)
+        {
+            if (Mathf.Approximately((sbAnnotation.TimeOfCreation + sbAnnotation.Duration), currentExecutionTime))
+                sbAnnotation.Draw();
+
+            if (sbAnnotation.TimeOfCreation + duration > currentExecutionTime)
+                sbAnnotation.EndDraw();
+        }
+
+        List<HighlightPointsAnnotation> highlightPointsList = annotationManager.HighlightPointsAnnotationList;
+        foreach (HighlightPointsAnnotation hpAnnotation in highlightPointsList)
+        {
+            if (Mathf.Approximately((hpAnnotation.TimeOfCreation + duration), currentExecutionTime))
+                hpAnnotation.Draw();
+
+            if (hpAnnotation.TimeOfCreation + duration > currentExecutionTime)
+                hpAnnotation.EndDraw();
+        }
+    }
+
     // Update is called once per frame
     void Update () {
 
-//		timeSinceExecutionStarted += Time.deltaTime;
-
-//		foreach(PointCloud pc in clouds)
-//			currentCloud = pc.currentCloud;
-
-//		if (currentCloud == 0) {
-//			annotationManager.ResetDrawState ();
-//			timeSinceExecutionStarted = 0;
-//		}
-
-//        // Draw annotations according to creation time
-//        if(timeOfCreationByAnnotationID.ContainsKey(timeSinceExecutionStarted))
-//        {
-//            Dictionary<int, TypeOfAnnotation> temp = timeOfCreationByAnnotationID[timeSinceExecutionStarted];
-//            foreach (int id in temp.Keys)
-//            {
-//                switch (temp[id])
-//                {
-//                    case TypeOfAnnotation.HIGHLIGHTPOINTS:
-//                        currentHighlightPointsAnnotation = annotationManager.GetHighlightPointsAnnotationByID(id);
-//                        currentHighlightPointsAnnotation.Draw();
-//                        currentDuration = currentHighlightPointsAnnotation.Duration;
-//                       // annotationManager.DrawHighlightPointsAnnotations();
-//                        break;
-
-//                    case TypeOfAnnotation.SCRIBBLER:
-//                        currentScribblerAnnotation = annotationManager.GetScribblerAnnotationByID(id);
-//                        currentScribblerAnnotation.Draw();
-//                        currentDuration = currentScribblerAnnotation.Duration;
-//                        //annotationManager.DrawScribblerAnnotations();
-//                        break;
-
-//                    case TypeOfAnnotation.TEXTTOSPEECH:
-//                        annotationManager.DrawTextToSpeechAnnotations();
-//                        break;
-//                }
-//            }
-//        }
-
-//        // Disable annotations according to duration
-//        if (Time.time - timeSinceExecutionStarted == currentDuration)
-//        {
-//            if(currentHighlightPointsAnnotation != null)
-//            {
-//                //?
-//                currentHighlightPointsAnnotation = null;
-//            }
-
-//            if(currentScribblerAnnotation != null)
-//            {
-//                currentScribblerAnnotation.LineRendererGO.SetActive(false);
-//                currentScribblerAnnotation = null;
-//            }
-//            currentDuration = 0.0f;
-//        }
-
-
-///*
-//		foreach (TypeOfAnnotation typeOfAnnotation in timeOfCreationByAnnotationType.Keys) {
-//			if (timeOfCreationByAnnotationType [typeOfAnnotation] == timeSinceExecutionStarted) {
-//				switch (typeOfAnnotation) {
-//				case TypeOfAnnotation.HIGHLIGHTPOINTS:
-//					annotationManager.DrawHighlightPointsAnnotations ();
-//					break;
-
-//				case TypeOfAnnotation.SCRIBBER:
-//					annotationManager.DrawScribblerAnnotations ();
-//					break;
-
-//				case TypeOfAnnotation.TEXTTOSPEECH:
-//					annotationManager.DrawTextToSpeechAnnotations ();
-//					break;
-//				}
-//			}	
-//		}
-//*/
-
+        currentExecutionTime += Time.deltaTime;
 
         handleMouseInput();
 		HandleMenuOptions ();
+        HandleAnnotationPlayback();
 
         //debug
        // Debug.Log("number of scribbler annotations: " + annotationManager.ScribblerAnnotationList.Count);
